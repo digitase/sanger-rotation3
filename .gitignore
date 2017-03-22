@@ -1,0 +1,12 @@
+lustre
+data
+*.swp
+*.swo
+*.Rdata
+*.Rhistory
+.output
+.DS_Store
+._.DS_Store
+._*
+__pycache__
+*.pyc
