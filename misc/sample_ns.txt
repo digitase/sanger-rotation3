@@ -1,0 +1,14 @@
+Numbers of strains.
+- Note 1 strain (12971_2#74) removed from st8/seq_tags_pfizer
+
+bb9@pcs5a:/lustre/scratch118/infgen/team81/dj9/staph.aureus/ben$ wc -l st*/seq_tags_*
+783 st22/seq_tags_bsac
+88 st22/seq_tags_pfizer
+61 st239/seq_tags_global
+157 st239/seq_tags_pfizer
+160 st239/seq_tags_singapore
+144 st30/seq_tags_bsac
+196 st30/seq_tags_pfizer
+19 st8/seq_tags_bsac
+334 st8/seq_tags_pfizer
+1942 total
