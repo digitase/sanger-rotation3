@@ -47,7 +47,7 @@ for (( i = 0; i < ${#alns[@]}; i++  )); do
     embl="${embls[$i]}"
     ref="${refs[$i]}"
     # Make st specific output dir
-    outdir="/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/2_homoplasy/$prefix"
+    outdir="/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/2_homoplasy/reconstruct_snps_on_tree/$prefix"
     mkdir -p "$outdir"
     #
     cd "$outdir"
