@@ -27,6 +27,7 @@ cp "$datadir/st8/CC8_USA300_FPR3757.embl" "$outdir"
 # .embl: annotations
 # -v: SMALT aligner version
 #    
+# TODO try using the v1.2 script version, usng BWA over SMALT. Use -y dirty flag to track errors
 cd "$outdir/bam"
 export PATH="/usr/bin/:$PATH"
 python2 ~sh16/scripts/multiple_mappings_to_bam.py \
