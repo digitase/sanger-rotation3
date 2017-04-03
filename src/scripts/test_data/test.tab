@@ -1,0 +1,14 @@
+FT   SNP             2654089
+FT                   /strand="reverse"
+FT                   /node="2->7521_5#31"
+FT                   /SNP="T->G"
+FT                   /codon_type="Nonsynonymous"
+FT                   /colour=4
+FT                   /taxa="7521_5#31"
+FT   SNP             1936327
+FT                   /node="836->838"
+FT                   /SNP="T->G"
+FT                   /homoplasy="convergence with branch leading to 7469_7#82, convergence with branch leading to 242, convergence with branch leading to 7480_7#17, convergence with branch leading to 7480_8#27, convergence with branch leading to 7554_6#82, convergence with branch leading to 12641_1#70, convergence with branch leading to 7480_8#41, convergence with branch leading to 7414_8#64, convergence with branch leading to 7480_8#10, convergence with branch leading to 7480_8#2, convergence with branch leading to 7554_6#34, convergence with branch leading to 7554_6#18"
+FT                   /codon_type="Intergenic"
+FT                   /colour=2
+FT                   /taxa="7712_8#5, 7480_7#23"
