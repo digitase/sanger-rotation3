@@ -7,6 +7,7 @@ import pandas as pd
 import numpy as np
 import collections
 import itertools
+import intervaltree
 from Bio import SeqIO
 
 def get_homoplasies(df, keep_all_sites=False):
@@ -46,22 +47,49 @@ def get_homoplasies(df, keep_all_sites=False):
     #
     return(hp)
 
+def build_intervaltree(features):
+    '''
+    '''
+    tree = intervaltree.IntervalTree()
+    for f in features:
+        # Add each part of a CompoundLocation
+        for part in f.location.parts:
+            tree.addi(int(part.start), int(part.end), f)
+    return(tree)
+
+
 def annotate_homoplasies(hp, embl_file):
     '''Annotate homoplasies with gene info
     '''
     print('Parsing EMBL file... {}'.format(embl_file))
     annot_record = next(SeqIO.parse(embl_file, 'embl'))
+    #
     # Build dictionary of SNP location -> gene
+    #
+    # Note: loc is 1-indexed, biopython converts embl coords to 0 indexed on parse
+    # TODO check if we need to check SNP strand
     print('Building SNP -> gene dict...')
     loc_features = collections.defaultdict(list)
-    for feature in annot_record.features:
-        if feature.type == 'CDS':
-            for loc in hp.index:
-                # TODO check if we need to check SNP strand
-                # loc is 1-indexed, biopython converts embl coords to 0 indexed on parse
-                if int(loc-1) in feature:
-                    loc_features[loc].append(feature)
-    #  Append annotations to df
+    #
+    # Brute force O(n^2) solution
+    #  for feature in annot_record.features:
+        #  if feature.type == 'CDS':
+            #  for loc in hp.index:
+                #  if int(loc-1) in feature:
+                    #  loc_features[loc].append(feature)
+    # intervaltree solution
+    tree = build_intervaltree(annot_record.features)
+    for loc in hp.index:
+        # Find tree nodes with features containing loc
+        intervals = tree.search(int(loc-1))
+        intervals = filter(lambda x: x.data.type == 'CDS', intervals)
+        # Add unique features to dict
+        loc_features[loc] = list(set(
+            i.data for i in intervals
+        ))
+    #
+    # Append annotations to df
+    #
     # None indicates lack of qualifier value
     # [] Indicates lack of feature
     print('Adding annotations...')
@@ -138,20 +166,4 @@ if __name__ == "__main__":
         #    df[df['loc'] == 2592254] #  An st22 reversal
         #    df.query('loc == 56478') #  Convergence and reversal
         #    df.query('loc == 2809075') #  Multiple changes with no homoplasy
-
-
-
-
-
-
-
-
-
-
-    
-
-
-
-
-
 
