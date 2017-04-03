@@ -33,6 +33,7 @@ def get_homoplasies(df, keep_all_sites=False):
     # convergence = SNP final base is the same as another SNP's final base
     # reversal = SNP final base reverts to ancestral base of another change e.g. loc=56478, st22
     # reversed = Opposite change to reversal
+    # other = non convergence, non reversal/reversed changes
     hp = pd.DataFrame()
     hp = hp.assign(
         change=df.groupby('loc').apply(lambda x: collections.Counter(x['change'])),
@@ -131,20 +132,26 @@ if __name__ == "__main__":
         #  prefix = 'st30'
 
         df = dfs.loc[prefix]
-        print('{}: {} SNPs in .tab file.'.format(prefix, len(df)))
-        hp = get_homoplasies(df)
-        print('{}: {} homoplastic sites in .tab file (ignore number if keep_all_sites == True).'.format(prefix, len(hp)))
+        print('{}: {} features in .tab file.'.format(prefix, len(df)))
+        hp = get_homoplasies(df, keep_all_sites=True)
+        print('{}: {} sites in .tab file.'.format(prefix, len(hp)))
+        print('{}: {} homoplasic sites in .tab file.'.format(prefix, len(hp.query('n_total > 1'))))
         hp = annotate_homoplasies(hp, embl_files[prefix])
 
         #  Write out homoplasies
         outfile = os.path.join(out_file_prefixes[prefix], prefix + "_homoplasies.csv")
         hp[hp['gene'].astype(bool)].sort_values('n_convergence', ascending=False).to_csv(outfile)
 
-        # TODO
-        #  Get genes with the highest ratio of homoplastic convergences to total SNPs
+        #  Get genes with the highest ratio of convergences to total changes
         genes = pd.DataFrame()
-        #  genes[''] = hp.groupby(hp['gene'].apply(str)).apply(len).sort_values()
-        #  hp.groupby(hp['gene'].apply(str)).apply(lambda x: sum(x['n_convergence'])).sort_values()
+        genes['product'] = hp.groupby(hp['gene'].apply(str))['product'].apply(lambda x: list(x)[0])
+        genes['n_total'] = hp.groupby(hp['gene'].apply(str))['n_total'].apply(sum)
+        genes['n_nonother'] = hp.groupby(hp['gene'].apply(str))['n_nonother'].apply(sum)
+        genes['n_convergence'] = hp.groupby(hp['gene'].apply(str))['n_convergence'].apply(sum)
+        genes['n_c/n_t'] = genes['n_convergence']/genes['n_total']
+
+        outfile = os.path.join(out_file_prefixes[prefix], prefix + "_homoplasic_genes.csv")
+        genes.sort_values('n_c/n_t', ascending=False).to_csv(outfile)
 
         #  It is not the case that all sites with a gene annotation are not tagged Intergenic,
         #  as the 'Intergenic' tag is given if the SNP strand does not match the gene strand
