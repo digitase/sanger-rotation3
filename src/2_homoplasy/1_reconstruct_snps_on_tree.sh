@@ -40,6 +40,10 @@ declare -a refs=(
     'CC8_USA300_FPR3757'
 )
 
+# transformation="acctran"
+# transformation="deltran"
+transformation="ML"
+#
 for (( i = 0; i < ${#alns[@]}; i++  )); do
     aln="${alns[$i]}"
     tree="${trees[$i]}"
@@ -47,7 +51,7 @@ for (( i = 0; i < ${#alns[@]}; i++  )); do
     embl="${embls[$i]}"
     ref="${refs[$i]}"
     # Make st specific output dir
-    outdir="/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/2_homoplasy/reconstruct_snps_on_tree/$prefix"
+    outdir="/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/2_homoplasy/reconstruct_snps_on_tree/$transformation/$prefix"
     mkdir -p "$outdir"
     #
     cd "$outdir"
@@ -58,8 +62,7 @@ for (( i = 0; i < ${#alns[@]}; i++  )); do
         -J "reconstruct_snps_on_tree.$prefix" \
         -o "$outdir/jobid_%J.bsub_o.log" \
         -e "$outdir/jobid_%J.bsub_e.log" \
-            "export PATH=/usr/bin/:$PATH && \
-            ~sh16/scripts/reconstruct_snps_on_tree.py -a $aln -t $tree -p $prefix -e $embl -r $ref"
+            "python2 ~sh16/scripts/reconstruct_snps_on_tree.py -a $aln -t $tree -p $prefix -T $transformation -e $embl -r $ref"
     cd -
     echo Finished bsub of $prefix at $(date)
 done
