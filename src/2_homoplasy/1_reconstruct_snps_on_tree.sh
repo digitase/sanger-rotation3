@@ -41,8 +41,8 @@ declare -a refs=(
 )
 
 # transformation="acctran"
-# transformation="deltran"
-transformation="ML"
+transformation="deltran"
+# transformation="ML"
 #
 for (( i = 0; i < ${#alns[@]}; i++  )); do
     aln="${alns[$i]}"
