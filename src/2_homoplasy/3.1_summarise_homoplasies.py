@@ -214,6 +214,8 @@ if __name__ == "__main__":
         genes['n_convergence_deltran'] = hp_merged.groupby(summary_series)['n_convergence_deltran'].apply(sum)
         genes['n_reversal_acctran'] = hp_merged.groupby(summary_series)['n_reversal_acctran'].apply(sum)
         genes['n_reversal_deltran'] = hp_merged.groupby(summary_series)['n_reversal_deltran'].apply(sum)
+        genes['n_both_acctran'] = hp_merged.groupby(summary_series)['n_both_acctran'].apply(sum)
+        genes['n_both_deltran'] = hp_merged.groupby(summary_series)['n_both_deltran'].apply(sum)
         genes['n_homoplasic_acctran'] = hp_merged.groupby(summary_series)['n_homoplasic_acctran'].apply(sum)
         genes['n_homoplasic_deltran'] = hp_merged.groupby(summary_series)['n_homoplasic_deltran'].apply(sum)
         genes['n_total'] = hp_merged.groupby(summary_series)['n_total_acctran'].apply(sum)
