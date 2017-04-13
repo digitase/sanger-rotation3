@@ -48,7 +48,7 @@ def get_homoplasies(df, keep_all_sites=False):
         n_homoplasic=df.groupby('loc').apply(lambda x: sum('convergence' in snp or 'reversal' in snp for snp in x['homoplasy'])),
         n_non_homoplasic=df.groupby('loc').apply(lambda x: sum(not 'convergence' in snp and not 'reversal' in snp for snp in x['homoplasy'])),
         n_total=df.groupby('loc').apply(lambda x: len(x['homoplasy'])),
-        branches=df.groupby('loc').apply(lambda x: tuple(x['homoplasy']))
+        #  branches=df.groupby('loc').apply(lambda x: tuple(x['homoplasy']))
     )
     #
     return(hp)
@@ -76,46 +76,6 @@ def annotate_homoplasies(hp, embl_file):
     print('Building SNP -> gene dict...')
     loc_features = collections.defaultdict(list)
     accepted_types = {"CDS"}
-
-    #
-    # Brute force O(n^2) solution
-    #  for feature in annot_record.features:
-        #  if feature.type == 'CDS':
-            #  for loc in hp.index:
-                #  if int(loc-1) in feature:
-                    #  loc_features[loc].append(feature)
-
-    if False:
-        #
-        # intervaltree solution
-        # NOTE: does not attempt to work out closest feature for intergenic locations
-        #
-        tree = build_intervaltree([f for f in annot_record.features if f.type in accepted_types])
-        #
-        for loc in hp.index:
-            # Find tree nodes with features containing loc
-            intervals = tree.search(int(loc-1))
-            # Add unique features to dict
-            loc_features[loc] = list(set(
-                i.data for i in intervals
-            ))
-        #
-        # append annotations to df
-        #
-        # [] Indicates lack of feature containing a site
-        # None indicates lack of a particular qualifier value describing a contained site
-        print('Adding annotations...')
-        loc_genes = [loc_features[loc] for loc in hp.index]
-        # These are nested lists, as qualifier values are lists e.g. 'gene': ['dnaA', 'dnaH']
-        hp['gene'] = [list(map(lambda x: x.qualifiers['gene'] if 'gene' in x.qualifiers else None, loc_gene)) for loc_gene in loc_genes]
-        hp['product'] = [list(map(lambda x: x.qualifiers['product'] if 'product' in x.qualifiers else None, loc_gene)) for loc_gene in loc_genes]
-        hp['locus_tag'] = [list(map(lambda x: x.qualifiers['locus_tag'] if 'locus_tag' in x.qualifiers else None, loc_gene)) for loc_gene in loc_genes]
-        hp['pseudo'] = [list(map(lambda x: '1' if 'pseudo' in x.qualifiers else 0, loc_gene)) for loc_gene in loc_genes]
-        # These are non-nested lists, as a feature has a single strand/type
-        hp['strand'] = [list(map(lambda x: x.strand, loc_gene)) for loc_gene in loc_genes]
-        hp['type'] = [list(map(lambda x: x.type, loc_gene)) for loc_gene in loc_genes]
-        #
-
     #
     # pybedtools solution
     #
@@ -169,8 +129,8 @@ def annotate_homoplasies(hp, embl_file):
         feature = uid_to_feature[f_uid]
         loc_to_features[loc].add((feature, dist))
 
-    # test case with combos of plus and minus strand genes and left and right exact positions (st239)
-    #  ([(x,y) for (x,y) in loc_to_features.items() if x in [655367, 2850827, 1179671, 2064502]])
+        # test case with combos of plus and minus strand genes and left and right exact positions (st239)
+        #  ([(x,y) for (x,y) in loc_to_features.items() if x in [655367, 2850827, 1179671, 2064502]])
 
     def get_qualifier_value_with_dist(feature_parts, qualifier):
         '''Summarise unique qualifier values within the given feature_parts, along with distance to closest feature
@@ -309,7 +269,7 @@ if __name__ == "__main__":
             '''Return unique values in an iterable of hashable elements, retaining order
             '''
             return(tuple(collections.OrderedDict(itertools.zip_longest(x, (None, ))).keys()))
-        
+
         #  Get genes with the highest ratio of convergences to total changes
         print('Summarising by feature...')
         #  summary_series = hp_merged['locus_tag'].apply(nested_lists_to_tuples)
@@ -317,11 +277,12 @@ if __name__ == "__main__":
         summary_series = hp_merged.apply(lambda x: str((x['locus_tag'], 'intergenic')) if x['intergenic'] != (0, ) else str(x['locus_tag']), axis=1)
         #
         genes = pd.DataFrame()
-        genes['locus_tag'] = hp_merged.groupby(summary_series)['locus_tag'].apply(lambda x: get_ordered_unique_values(nested_lists_to_tuples(list(x))))
-        genes['gene'] = hp_merged.groupby(summary_series)['gene'].apply(lambda x: get_ordered_unique_values(nested_lists_to_tuples(list(x))))
-        genes['product'] = hp_merged.groupby(summary_series)['product'].apply(lambda x: get_ordered_unique_values(nested_lists_to_tuples(list(x))))
-        genes['pseudo'] = hp_merged.groupby(summary_series)['pseudo'].apply(lambda x: get_ordered_unique_values(nested_lists_to_tuples(list(x))))
-        genes['strand'] = hp_merged.groupby(summary_series)['strand'].apply(lambda x: get_ordered_unique_values(nested_lists_to_tuples(list(x))))
+        genes['intergenic'] = hp_merged.groupby(summary_series)['intergenic'].apply(lambda x: any(x))
+        genes['locus_tag'] = hp_merged.groupby(summary_series)['locus_tag'].apply(lambda x: get_ordered_unique_values(x))
+        genes['gene'] = hp_merged.groupby(summary_series)['gene'].apply(lambda x: get_ordered_unique_values(x))
+        genes['product'] = hp_merged.groupby(summary_series)['product'].apply(lambda x: get_ordered_unique_values(x))
+        genes['pseudo'] = hp_merged.groupby(summary_series)['pseudo'].apply(lambda x: get_ordered_unique_values(x))
+        genes['strand'] = hp_merged.groupby(summary_series)['strand'].apply(lambda x: get_ordered_unique_values(x))
         #
         genes['n_sites'] = hp_merged.groupby(summary_series)['strand'].apply(len)
         genes['agree_acctran_deltran'] = hp_merged.groupby(summary_series).apply(lambda x: collections.Counter(x['agree_acctran_deltran']))
@@ -340,6 +301,13 @@ if __name__ == "__main__":
         genes['n_h_acctran/n_t'] = genes['n_homoplasic_acctran']/genes['n_total']
         genes['n_h_deltran/n_t'] = genes['n_homoplasic_deltran']/genes['n_total']
 
+        # Write out summary
+        #
+        #  Why are the tuples so deeply nested?
+        #  single feature: tuple, feature can have multiple qualifiers
+        #  single location (hp): tuple of tuples, a location can have overlapping features
+        #  grouping of locations in features (genes): tuple of tuple of tuples, a single feature contains multiple locations
+        genes.index.name = 'feature'
         outfile = os.path.join(out_file_prefixes[prefix], prefix + "_homoplasies_per_gene.csv")
         genes.sort_values(['n_h_acctran/n_t', 'n_h_deltran/n_t'], ascending=False).to_csv(outfile)
 
