@@ -7,7 +7,7 @@ import pandas as pd
 import numpy as np
 import collections
 import itertools
-import intervaltree
+#  import intervaltree
 from Bio import SeqIO
 import pybedtools
 
@@ -53,15 +53,15 @@ def get_homoplasies(df, keep_all_sites=False):
     #
     return(hp)
 
-def build_intervaltree(features):
-    '''Interval tree for fast search for containing intervals
-    '''
-    tree = intervaltree.IntervalTree()
-    for f in features:
+#  def build_intervaltree(features):
+    #  '''Interval tree for fast search for containing intervals
+    #  '''
+    #  tree = intervaltree.IntervalTree()
+    #  for f in features:
         # Add each part of a CompoundLocation
-        for part in f.location.parts:
-            tree.addi(int(part.start), int(part.end), f)
-    return(tree)
+        #  for part in f.location.parts:
+            #  tree.addi(int(part.start), int(part.end), f)
+    #  return(tree)
 
 def annotate_homoplasies(hp, embl_file):
     '''Annotate homoplasies with gene info
@@ -277,7 +277,7 @@ if __name__ == "__main__":
         summary_series = hp_merged.apply(lambda x: str((x['locus_tag'], 'intergenic')) if x['intergenic'] != (0, ) else str(x['locus_tag']), axis=1)
         #
         genes = pd.DataFrame()
-        genes['intergenic'] = hp_merged.groupby(summary_series)['intergenic'].apply(lambda x: any(x))
+        genes['intergenic'] = hp_merged.groupby(summary_series).apply(lambda x: any(dist != (0, ) for dist in x['intergenic']))
         genes['locus_tag'] = hp_merged.groupby(summary_series)['locus_tag'].apply(lambda x: get_ordered_unique_values(x))
         genes['gene'] = hp_merged.groupby(summary_series)['gene'].apply(lambda x: get_ordered_unique_values(x))
         genes['product'] = hp_merged.groupby(summary_series)['product'].apply(lambda x: get_ordered_unique_values(x))
