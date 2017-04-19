@@ -25,6 +25,31 @@ class Feature:
         if len(pp_result) >= 3:
             self.qualifs = dict((x[0], x[1]) for x in pp_result[3])
     #
+    def to_tab(self):
+        '''Return string in .tab file format
+        '''
+        key_col = 6
+        loc_col = 22
+        type_key_spacer = ' ' * (key_col-len(self.type)-1)
+        key_loc_spacer = ' ' * (loc_col-len(self.key)-len(type_key_spacer)-len(self.type)-1)
+        type_loc_spacer = ' ' * (loc_col-len(self.type)-1)
+        tab_header_template = '{type}{type_key_spacer}{key}{key_loc_spacer}{loc}'
+        tab_qualif_template = '{type}{spacer}/{qualif_key}={qualif_value}'
+        header = tab_header_template.format(
+                type=self.type, 
+                type_key_spacer=type_key_spacer,
+                key=self.key,
+                key_loc_spacer=key_loc_spacer,
+                loc=self.loc
+        )
+        qualifs = [tab_qualif_template.format(
+            type=self.type,
+            spacer=type_loc_spacer,
+            qualif_key=k,
+            qualif_value=repr(v) if type(v) is int else '"{}"'.format(repr(v)[1:-1]),
+            ) for (k, v) in self.qualifs.items()]
+        return '\n'.join([header] + qualifs)
+    #
     def __str__(self):
         return(str(map(str, [self.type, self.key, self.loc, self.qualifs])))
     #
@@ -86,6 +111,16 @@ class FtTabFile:
             out_df.loc[:, k] = col
         #  Write out csv
         return(out_df.to_csv(out_file))
+    #
+    def write_tab(self, out_file=None):
+        '''Write features to .tab
+        '''
+        output = '\n'.join(f.to_tab() for f in self.features)
+        if out_file:
+            with open(out_file, 'w') as out_fhandle:
+                out_fhandle.write(output)
+        else:
+            print(output)
         
 if __name__ == "__main__":
     test_ft_tab_string = '''FT   SNP             2654089
