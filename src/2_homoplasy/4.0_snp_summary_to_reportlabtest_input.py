@@ -9,6 +9,7 @@ import itertools
 import pandas as pd
 import sys
 import os
+import tempfile
 from Bio import SeqIO
 sys.path.append(os.path.abspath("/nfs/users/nfs_b/bb9/workspace/rotation3/src/scripts/"))
 import parse_ft_tab_file
@@ -38,9 +39,11 @@ embl_files = {
 }
 out_tab_template = "/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/2_homoplasy/plots/{prefix}/{prefix}.locus_tag_{locus_tag}.tab"
 out_pdf_template = "/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/2_homoplasy/plots/{prefix}/{prefix}.locus_tag_{locus_tag}.pdf"
+# Dir to store intermediate files in
+tmp_dir = '/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/tmp/'
 
 to_plot = {
-    'st8': ['SAUSA300_2565']
+    'st8': ['SAUSA300_0148', 'SAUSA300_1981', 'SAUSA300_2565']
 }
 print(to_plot)
 
@@ -145,10 +148,16 @@ for short_prefix, locus_tags in to_plot.items():
         print('{}: {}: Generating .tab file...'.format(short_prefix, locus_tag))
         ft_tab_file = parse_ft_tab_file.FtTabFile()
         ft_tab_file.features = list(meta.apply(meta_row_to_tab_ft, axis=1))
-        ft_tab_file.write_tab(out_tab_template.format(prefix=prefixes[short_prefix], locus_tag=locus_tag))
+        
+        #  ft_tab_file.write_tab(out_tab_template.format(prefix=prefixes[short_prefix], locus_tag=locus_tag))
+        # Temporary .tab file for reportlabtest
+        # Must end in .tab to be recognised.
+        _, tmp_tab_file = tempfile.mkstemp(suffix='.{}.{}.reportlabtest.tab'.format(short_prefix, locus_tag), dir=tmp_dir)
+        ft_tab_file.write_tab(tmp_tab_file)
 
-        if True:
-            print('{}: {}: Generating reportlabtest .sh script...'.format(short_prefix, locus_tag))
+        try:
+
+            print('{}: {}: Running reportlabtest...'.format(short_prefix, locus_tag))
             cmd = ' '.join((
                 r'python2 /nfs/users/nfs_b/bb9/workspace/rotation3/src/2_homoplasy/reportlabtest_modified.py',
                 r'-t "{tree}"',
@@ -165,10 +174,16 @@ for short_prefix, locus_tags in to_plot.items():
                 #  pdf='test.pdf',
                 pdf=out_pdf_template.format(prefix=prefixes[short_prefix], locus_tag=locus_tag),
                 #  tab='test.tab', 
-                tab=out_tab_template.format(prefix=prefixes[short_prefix], locus_tag=locus_tag),
+                #  tab=out_tab_template.format(prefix=prefixes[short_prefix], locus_tag=locus_tag),
+                tab=tmp_tab_file,
                 embl=embl_files[short_prefix]
             )
             #
-            with open('test.sh', 'w') as test_fhandle:
-                test_fhandle.write(cmd)
+            #  with open('test.sh', 'w') as test_fhandle:
+                #  test_fhandle.write(cmd)
+            # 
+            _ = os.system(cmd)
+
+        finally:
+            os.remove(tmp_tab_file)
 
