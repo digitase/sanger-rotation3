@@ -42,7 +42,11 @@ out_pdf_template = "/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/2_homoplasy/
 # Dir to store intermediate files in
 tmp_dir = '/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/tmp/'
 
+# NOTE: make sure there are no spaces in the locus tags
 to_plot = {
+    'st22': ['SAEMRSA1525350', 'SAEMRSA1504890', 'SAEMRSA1517670'],
+    'st239': ['SATW20_27680', 'SATW20_26650', 'SATW20_06320'],
+    'st30': ['SAR1827', 'SAR2709', 'SAR0375'],
     'st8': ['SAUSA300_0148', 'SAUSA300_1981', 'SAUSA300_2565']
 }
 print(to_plot)
@@ -158,16 +162,22 @@ for short_prefix, locus_tags in to_plot.items():
         try:
 
             print('{}: {}: Running reportlabtest...'.format(short_prefix, locus_tag))
-            cmd = ' '.join((
-                r'python2 /nfs/users/nfs_b/bb9/workspace/rotation3/src/2_homoplasy/reportlabtest_modified.py',
-                r'-t "{tree}"',
-                r'-q taxa',
-                r'-b {start} -e {end}',
-                r'-l 2 -A 2 -E 15',
-                r'-a 2 -L left --proportion 0.4',
-                r'-o "{pdf}"',
-                r'"{tab}" "{embl}"'
-            )).format(
+
+            #  bsub = ('', )
+            bsub = (r'bsub -G team81 -q normal -R "select[mem>2000] rusage[mem=2000]" -M 2000 -J "reportlabtest.{short_prefix}.{locus_tag}" -o "/dev/null" -e "/dev/null"'.format(short_prefix=short_prefix, locus_tag=locus_tag), )
+
+            cmd = ' '.join(
+                bsub + (
+                    r'python2 /nfs/users/nfs_b/bb9/workspace/rotation3/src/2_homoplasy/reportlabtest_modified.py',
+                    r'-t "{tree}"',
+                    r'-q taxa',
+                    r'-b {start} -e {end}',
+                    r'-l 2 -A 2 -E 15',
+                    r'-a 2 -L left --proportion 0.4',
+                    r'-o "{pdf}"',
+                    r'"{tab}" "{embl}"'
+                )
+            ).format(
                 tree=tree_files[short_prefix],
                 start=min(locus_tag_to_bounds[locus_tag][0], min(meta['loc'])), 
                 end=max(locus_tag_to_bounds[locus_tag][1], max(meta['loc'])), 
@@ -182,8 +192,11 @@ for short_prefix, locus_tags in to_plot.items():
             #  with open('test.sh', 'w') as test_fhandle:
                 #  test_fhandle.write(cmd)
             # 
+
             _ = os.system(cmd)
 
         finally:
-            os.remove(tmp_tab_file)
+            pass
+            # TODO Can't remove .tab files before bsub job completes...
+            #  os.remove(tmp_tab_file)
 
