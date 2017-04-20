@@ -14,6 +14,7 @@ from Bio import SeqIO
 sys.path.append(os.path.abspath("/nfs/users/nfs_b/bb9/workspace/rotation3/src/scripts/"))
 import parse_ft_tab_file
 
+reportlabtest_script = '/nfs/users/nfs_b/bb9/workspace/rotation3/src/scripts/reportlabtest_modified.py'
 prefixes = {
     "st22": "S.aureus_ST22_BSAC_Pfizer",
     "st239": "S.aureus_ST239_global_Singapore_Pfizer",
@@ -168,7 +169,7 @@ for short_prefix, locus_tags in to_plot.items():
 
             cmd = ' '.join(
                 bsub + (
-                    r'python2 /nfs/users/nfs_b/bb9/workspace/rotation3/src/2_homoplasy/reportlabtest_modified.py',
+                    r'python2 {reportlabtest_script}',
                     r'-t "{tree}"',
                     r'-q taxa',
                     r'-b {start} -e {end}',
@@ -178,6 +179,7 @@ for short_prefix, locus_tags in to_plot.items():
                     r'"{tab}" "{embl}"'
                 )
             ).format(
+                reportlabtest_script=reportlabtest_script,
                 tree=tree_files[short_prefix],
                 start=min(locus_tag_to_bounds[locus_tag][0], min(meta['loc'])), 
                 end=max(locus_tag_to_bounds[locus_tag][1], max(meta['loc'])), 

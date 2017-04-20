@@ -54,7 +54,7 @@ for (( i = 0; i < ${#trees[@]}; i++ )); do
         -J "reportlabtest.$prefix" \
         -o "$outdir/jobid_%J.bsub_o.log" \
         -e "$outdir/jobid_%J.bsub_e.log" \
-            python2 /nfs/users/nfs_b/bb9/workspace/rotation3/src/2_homoplasy/reportlabtest_modified.py \
+            python2 /nfs/users/nfs_b/bb9/workspace/rotation3/src/scripts/reportlabtest_modified.py \
                 -t "$tree" \
                 -q taxa \
                 -l 2 -A 2 -E 5 \
