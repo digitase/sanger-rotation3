@@ -1,4 +1,5 @@
-
+'''Plot distribution of character states for particular sites on tree
+'''
 import matplotlib
 import matplotlib.pyplot as plt
 from Bio import Phylo
@@ -18,7 +19,7 @@ prefixes = {
 tree_file_template = "/lustre/scratch118/infgen/team81/bb9/2_homoplasy/reconstruct_snps_on_tree/{transformation}/{prefix}/{prefix}_{transformation}_steps.tre"
 changes_file_template = "/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/2_homoplasy/summarise_homoplasies/{prefix}/{prefix}_homoplasies_on_tree.{transformation}.csv"
 snps_file_template = "/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/2_homoplasy/summarise_snps/{prefix}/{prefix}.out"
-out_pdf_template = "/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/2_homoplasy/plots/{prefix}/{prefix}.{transformation}.loc_{loc}.pdf"
+out_pdf_template = "/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/4_verify_candidates/plots/{prefix}/{prefix}.{transformation}.loc_{loc}.pdf"
 
 colors = {'A': 'green', 'C': 'blue', 'G': 'black', 'T': 'red'}
 transformations = ['acctran', 'deltran']

@@ -1,11 +1,10 @@
 #!/nfs/users/nfs_b/bb9/miniconda3/envs/py35/bin/python
-'''
-
-Idea is to plot the tip states for homoplasic sites in and around genes against the tree.
+'''Plot the tip states for homoplasic sites in and around genes against the tree.
 '''
 
 import collections
 import itertools
+import functools
 import pandas as pd
 import sys
 import os
@@ -38,20 +37,47 @@ embl_files = {
     "st30": "/nfs/users/nfs_b/bb9/workspace/rotation3/data/st30/CC30_MRSA252.embl",
     "st8": "/nfs/users/nfs_b/bb9/workspace/rotation3/data/st8/CC8_USA300_FPR3757.embl",
 }
-out_tab_template = "/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/2_homoplasy/plots/{prefix}/{prefix}.locus_tag_{locus_tag}.tab"
-out_pdf_template = "/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/2_homoplasy/plots/{prefix}/{prefix}.locus_tag_{locus_tag}.pdf"
+#  out_tab_template = "/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/4_verify_candidates/plots/{prefix}/{prefix}.locus_tag_{locus_tag}.tab"
+out_pdf_template = "/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/4_verify_candidates/plots_reportlabtest/homologs/{prefix}/{prefix}.locus_tag_{locus_tag}.pdf"
 # Dir to store intermediate files in
 tmp_dir = '/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/tmp/'
 
 # NOTE: make sure there are no spaces in the locus tags
-to_plot = {
-    'st22': ['SAEMRSA1525350', 'SAEMRSA1504890', 'SAEMRSA1517670'],
-    'st239': ['SATW20_27680', 'SATW20_26650', 'SATW20_06320'],
-    'st30': ['SAR1827', 'SAR2709', 'SAR0375'],
-    'st8': ['SAUSA300_0148', 'SAUSA300_1981', 'SAUSA300_2565']
-}
-print(to_plot)
+#
+# Top 3 ranked loci for each st
+#  to_plot = {
+    #  'st22': ['SAEMRSA1525350', 'SAEMRSA1504890', 'SAEMRSA1517670'],
+    #  'st239': ['SATW20_27680', 'SATW20_26650', 'SATW20_06320'],
+    #  'st30': ['SAR1827', 'SAR2709', 'SAR0375'],
+    #  'st8': ['SAUSA300_0148', 'SAUSA300_1981', 'SAUSA300_2565']
+#  }
+#
 
+# Loci in top 10 homologous sets
+to_plot_str = '''
+('SAR0370', 'SATW20_08950')
+('SAR1827', 'SATW20_27080')
+('SAR0373', 'SAUSA300_0808')
+('SAR0372', 'SAUSA300_0807')
+('SAEMRSA1519360', 'SAR0381', 'SATW20_09070', 'SATW20_20110')
+('SAR0378', 'SATW20_09030')
+('SAR1826', 'SATW20_27070')
+('SAR0377', 'SATW20_09020')
+('SAEMRSA1519350', 'SAR0382', 'SATW20_09080', 'SATW20_20100', 'SAUSA300_1981')
+('SAEMRSA1512890', 'SAR1439', 'SATW20_14270', 'SAUSA300_1319')
+'''
+# Lazy way of plotting copypastas from .csv files open in Excel
+to_plot_tuple = functools.reduce(lambda x, y: x+y, [eval(x) for x in to_plot_str.strip().split('\n')])
+#
+to_plot = {
+    'st22' : [x for x in to_plot_tuple if x.startswith('SAEMRSA')],
+    'st239': [x for x in to_plot_tuple if x.startswith('SATW20_')],
+    'st30' : [x for x in to_plot_tuple if x.startswith('SAR')],
+    'st8'  : [x for x in to_plot_tuple if x.startswith('SAUSA300_')],
+}
+
+#
+print(to_plot)
 for short_prefix, locus_tags in to_plot.items():
 
     #  short_prefix = 'st8'
@@ -99,12 +125,15 @@ for short_prefix, locus_tags in to_plot.items():
         print('{}: {}: Filling in ref bases...'.format(short_prefix, locus_tag))
         loc_to_ref_base = dict(zip(snp_summary.iloc[:, 1], snp_summary['Ref_base']))
         meta['snp_full'] = meta['snp']
-        meta.loc[meta['snp'] == '.', 'snp_full'] = meta.loc[meta['snp'] == '.'].apply(lambda row: loc_to_ref_base[row['loc']], axis=1)
+        # Check if there are any snps associated with the locus at all
+        if len(meta):
+            meta.loc[meta['snp'] == '.', 'snp_full'] = meta.loc[meta['snp'] == '.'].apply(lambda row: loc_to_ref_base[row['loc']], axis=1)
 
         # Mark homoplasic sites
         print('{}: {}: Marking homoplasic sites...'.format(short_prefix, locus_tag))
         loc_to_homoplasic = dict(zip(hp['loc'], hp['n_homoplasic_acctran'] + hp['n_homoplasic_deltran'] > 0))
-        meta.loc[:, 'homoplasic'] = meta.apply(lambda row: loc_to_homoplasic[row['loc']], axis=1)
+        #  meta.loc[:, 'homoplasic'] = meta.apply(lambda row: loc_to_homoplasic[row['loc']], axis=1)
+        meta.loc[:, 'homoplasic'] = meta['loc'].map(lambda x: loc_to_homoplasic[x])
 
         # Colour loc based on whether a loc is homoplasic
         print('{}: {}: Colouring locs...'.format(short_prefix, locus_tag))
@@ -137,7 +166,7 @@ for short_prefix, locus_tags in to_plot.items():
             ('T', True): 2 
         }
         #
-        meta.loc[:, 'colour'] = meta.apply(lambda x: colours[(x['snp_full'], x['homoplasic'])], axis=1)
+        meta.loc[:, 'colour'] = meta.apply(lambda x: colours[(x['snp_full'], x['homoplasic'])], axis=1, reduce=True)
 
         # Generate .tab file features
         def meta_row_to_tab_ft(x):
@@ -152,7 +181,7 @@ for short_prefix, locus_tags in to_plot.items():
         #
         print('{}: {}: Generating .tab file...'.format(short_prefix, locus_tag))
         ft_tab_file = parse_ft_tab_file.FtTabFile()
-        ft_tab_file.features = list(meta.apply(meta_row_to_tab_ft, axis=1))
+        ft_tab_file.features = list(meta.apply(meta_row_to_tab_ft, axis=1, reduce=True))
         
         #  ft_tab_file.write_tab(out_tab_template.format(prefix=prefixes[short_prefix], locus_tag=locus_tag))
         # Temporary .tab file for reportlabtest
@@ -161,11 +190,13 @@ for short_prefix, locus_tags in to_plot.items():
         ft_tab_file.write_tab(tmp_tab_file)
 
         try:
-
             print('{}: {}: Running reportlabtest...'.format(short_prefix, locus_tag))
 
             #  bsub = ('', )
             bsub = (r'bsub -G team81 -q normal -R "select[mem>2000] rusage[mem=2000]" -M 2000 -J "reportlabtest.{short_prefix}.{locus_tag}" -o "/dev/null" -e "/dev/null"'.format(short_prefix=short_prefix, locus_tag=locus_tag), )
+
+            out_pdf_dir, out_pdf = os.path.split(out_pdf_template.format(prefix=prefixes[short_prefix], locus_tag=locus_tag))
+            os.makedirs(out_pdf_dir, exist_ok=True)
 
             cmd = ' '.join(
                 bsub + (
@@ -184,7 +215,7 @@ for short_prefix, locus_tags in to_plot.items():
                 start=min(locus_tag_to_bounds[locus_tag][0], min(meta['loc'])), 
                 end=max(locus_tag_to_bounds[locus_tag][1], max(meta['loc'])), 
                 #  pdf='test.pdf',
-                pdf=out_pdf_template.format(prefix=prefixes[short_prefix], locus_tag=locus_tag),
+                pdf=os.path.join(out_pdf_dir, out_pdf),
                 #  tab='test.tab', 
                 #  tab=out_tab_template.format(prefix=prefixes[short_prefix], locus_tag=locus_tag),
                 tab=tmp_tab_file,
@@ -195,10 +226,11 @@ for short_prefix, locus_tags in to_plot.items():
                 #  test_fhandle.write(cmd)
             # 
 
+            print(cmd)
             _ = os.system(cmd)
 
         finally:
-            pass
             # TODO Can't remove .tab files before bsub job completes...
-            #  os.remove(tmp_tab_file)
+            if not len(bsub[0]):
+                os.remove(tmp_tab_file)
 
