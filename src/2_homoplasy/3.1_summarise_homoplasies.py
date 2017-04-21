@@ -123,9 +123,9 @@ def annotate_homoplasies(hp, embl_file):
                     sign = -1
             else:
                 raise(ValueError(f_strand))
+            dist = dist * sign 
         else:
             raise(ValueError(dist))
-        dist = dist * sign 
         feature = uid_to_feature[f_uid]
         loc_to_features[loc].add((feature, dist))
 
