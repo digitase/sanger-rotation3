@@ -93,6 +93,23 @@ for short_prefix, embl_file in embl_files.items():
             product = feature.qualifiers['product'] if 'product' in feature.qualifiers else None 
             locus_annotations[locus_tag] = {'st': short_prefix, 'gene': gene, 'product': product}
 
+#
+# Mark known loci from 2010 paper
+#
+print('Marking known homoplasic loci...')
+#
+known_hps_annotated = pd.read_csv('/nfs/users/nfs_b/bb9/workspace/rotation3/misc/homoplasies_st239_harris_et_al_2010_science_table1.annotated.csv', index_col=0)
+known_hps_annotated['locus_tag_simplified'] = known_hps_annotated['locus_tag'].map(lambda x: eval(x)[0][0])
+#
+known_hps_annotated_genic = known_hps_annotated[known_hps_annotated['intergenic'].map(lambda x: all(d == 0 for d in eval(x)))]
+known_hps_annotated_intergenic = known_hps_annotated[~known_hps_annotated['intergenic'].map(lambda x: all(d == 0 for d in eval(x)))]
+print('Read in {} known homoplasic sites, in {} unique loci, intergenic near {} unique loci.'.format(
+    len(known_hps_annotated), 
+    len(known_hps_annotated_genic['locus_tag_simplified'].unique()),
+    len(known_hps_annotated_intergenic['locus_tag_simplified'].unique())
+))
+
+#
 print('Writing summary...')
 genic_summary = pd.DataFrame({
     'sts': [tuple(locus_annotations[locus_tag]['st'] for locus_tag in homologs) for homologs in homolog_genic], 
@@ -100,20 +117,21 @@ genic_summary = pd.DataFrame({
     'genes': [tuple(locus_annotations[locus_tag]['gene'] for locus_tag in homologs) for homologs in homolog_genic], 
     'products': [tuple(locus_annotations[locus_tag]['product'] for locus_tag in homologs) for homologs in homolog_genic], 
     'mean_rank_norm': homolog_ranks_genic, 
+    'known_hp_harris_et_al_2010': [any(locus in set(known_hps_annotated_genic['locus_tag_simplified']) for locus in homologs) for homologs in homolog_genic]
 }).sort_values('mean_rank_norm', ascending=False)
-
+#
 intergenic_summary = pd.DataFrame({
     'sts': [tuple(locus_annotations[locus_tag]['st'] for locus_tag in homologs) for homologs in homolog_intergenic], 
     'homologs': homolog_intergenic, 
     'genes': [tuple(locus_annotations[locus_tag]['gene'] for locus_tag in homologs) for homologs in homolog_intergenic], 
     'products': [tuple(locus_annotations[locus_tag]['product'] for locus_tag in homologs) for homologs in homolog_intergenic], 
     'mean_rank_norm': homolog_ranks_intergenic, 
+    'known_hp_harris_et_al_2010': [any(locus in set(known_hps_annotated_intergenic['locus_tag_simplified']) for locus in homologs) for homologs in homolog_intergenic]
 }).sort_values('mean_rank_norm', ascending=False)
+#
+print('Marked {} homolog groups (genic), {} intergenic.'.format(genic_summary['known_hp_harris_et_al_2010'].sum(), intergenic_summary['known_hp_harris_et_al_2010'].sum()))
 
 # Missing value of mean_rank_norm means none of the locus tags in the homology group were present after filtering
 genic_summary.to_csv('/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/3_find_candidates/hp_homologs_summary_genic.csv')
 intergenic_summary.to_csv('/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/3_find_candidates/hp_homologs_summary_intergenic.csv')
-
-#  TODO: filter out known loci from 2010 paper
-known_hps = None
 
