@@ -24,13 +24,14 @@ embl_files = {
 
 # Read in gene homoplasies
 genes = dict((short_prefix, pd.read_csv(genes_file_template.format(prefix=prefixes[short_prefix], short_prefix=short_prefix))) for short_prefix in prefixes)
-
+# Rank strains separately
 print('Ranking loci...')
 genes_ranked = {}
 for short_prefix, gene in genes.items():
     # Rank genes by: (agree_prop_acctran_deltran * n_homoplasic_acctran)/n_total
     gene = genes[short_prefix]
     gene.loc[:, 'ranker'] = gene['agree_prop_acctran_deltran'] * gene['n_homoplasic_acctran'] / gene['n_total']
+    # Filter for loci in the top 10% of number of homoplasies
     min_hp_thresh = gene.loc[gene.ranker > 0, 'n_homoplasic_acctran'].quantile(0.90)
     gene = gene.loc[(gene['ranker'] > 0) & (gene['n_homoplasic_acctran'] > min_hp_thresh)].copy()
     gene['rank'] = gene['ranker'].rank(method='average')
@@ -70,9 +71,9 @@ ranked_merged_intergenic = ranked_merged[ranked_merged['intergenic']]
 ranked_merged_genic = ranked_merged[~ranked_merged['intergenic']]
 #
 homolog_genic = []
-homolog_ranks_genic = []
 homolog_intergenic = []
 homolog_ranks_intergenic = []
+homolog_ranks_genic = []
 for c in nx.connected_components(G):
     homolog_genic.append(tuple(sorted(c)))
     homolog_intergenic.append(tuple(sorted(c)))
@@ -109,6 +110,7 @@ intergenic_summary = pd.DataFrame({
     'mean_rank_norm': homolog_ranks_intergenic, 
 }).sort_values('mean_rank_norm', ascending=False)
 
+# Missing value of mean_rank_norm means none of the locus tags in the homology group were present after filtering
 genic_summary.to_csv('/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/3_find_candidates/hp_homologs_summary_genic.csv')
 intergenic_summary.to_csv('/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/3_find_candidates/hp_homologs_summary_intergenic.csv')
 
