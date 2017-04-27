@@ -284,6 +284,7 @@ if __name__ == "__main__":
         genes['pseudo'] = hp_merged.groupby(summary_series)['pseudo'].apply(lambda x: get_ordered_unique_values(x))
         genes['strand'] = hp_merged.groupby(summary_series)['strand'].apply(lambda x: get_ordered_unique_values(x))
         #
+        # n_sites is the number of sites within the gene
         genes['n_sites'] = hp_merged.groupby(summary_series)['strand'].apply(len)
         genes['agree_acctran_deltran'] = hp_merged.groupby(summary_series).apply(lambda x: collections.Counter(x['agree_acctran_deltran']))
         genes['agree_prop_acctran_deltran'] = genes['agree_acctran_deltran'].apply(lambda x: x[True]/(x[True]+x[False]))
@@ -296,6 +297,8 @@ if __name__ == "__main__":
         genes['n_both_deltran'] = hp_merged.groupby(summary_series)['n_both_deltran'].apply(sum)
         genes['n_homoplasic_acctran'] = hp_merged.groupby(summary_series)['n_homoplasic_acctran'].apply(sum)
         genes['n_homoplasic_deltran'] = hp_merged.groupby(summary_series)['n_homoplasic_deltran'].apply(sum)
+        # n_total is number of changes at a site (summed for all sites in the gene), giving number of changes in a gene
+        #  i.e. assert(all(hp[hp['n_convergence'] + hp['n_reversal'] - hp['n_both'] + hp['n_non_homoplasic'] == hp['n_total']]))
         genes['n_total'] = hp_merged.groupby(summary_series)['n_total_acctran'].apply(sum)
         #
         genes['n_h_acctran/n_t'] = genes['n_homoplasic_acctran']/genes['n_total']

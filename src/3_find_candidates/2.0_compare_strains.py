@@ -31,13 +31,23 @@ for short_prefix, gene in genes.items():
     # Rank genes by: (agree_prop_acctran_deltran * n_homoplasic_acctran)/n_total
     gene = genes[short_prefix]
     gene.loc[:, 'ranker'] = gene['agree_prop_acctran_deltran'] * gene['n_homoplasic_acctran'] / gene['n_total']
-    # Filter for loci in the top 10% of number of homoplasies
-    min_hp_thresh = gene.loc[gene.ranker > 0, 'n_homoplasic_acctran'].quantile(0.90)
+    # Filter for loci in the top 20% of number of homoplasies
+    min_hp_thresh = gene.loc[gene.ranker > 0, 'n_homoplasic_acctran'].quantile(0.8)
     gene = gene.loc[(gene['ranker'] > 0) & (gene['n_homoplasic_acctran'] > min_hp_thresh)].copy()
     gene['rank'] = gene['ranker'].rank(method='average')
     # Use normalised rank as number of ranked genes differ between strains
     gene['rank_norm'] = gene['rank'] / len(gene['rank'])
     genes_ranked[short_prefix] = gene
+
+for short_prefix, gene in genes.items():
+    # Get some simple summary stats
+    print(short_prefix)
+    print(gene.iloc[:, [7, 10, 11, 12, 13, 14, 15, 16, 17, 18]].apply(sum))
+    print('agree_prop_acctran_deltran mean: {}'.format(gene.loc[gene.n_homoplasic_acctran.astype(bool) | gene.n_homoplasic_deltran.astype(bool), 'agree_prop_acctran_deltran'].mean()))
+    print('n genes with homoplasies: {}'.format(len(gene.loc[(gene.n_homoplasic_acctran.astype(bool) | gene.n_homoplasic_deltran.astype(bool)) & ~gene.intergenic])))
+    print('n genes: {}'.format(len(~gene.intergenic)))
+    print('n near-gene-regions with homoplasies: {}'.format(len(gene.loc[(gene.n_homoplasic_acctran.astype(bool) | gene.n_homoplasic_deltran.astype(bool)) & gene.intergenic])))
+    print('n near-gene-regions: {}'.format(len(gene.intergenic)))
 
 # Read in reciprocal best hits tables and build adjaceny graph
 print('Constructing homology graph...')
@@ -64,16 +74,17 @@ G = nx.from_edgelist(rbh_edges).to_undirected()
 #  ranking by (agree_prop_acctran_deltran * n_homoplasic_acctran)/n_total
 #
 print('Aggregating ranks...')
-ranked_merged = pd.concat(genes_ranked.values(), names=genes_ranked.keys())
+ranked_merged = pd.concat(genes_ranked.values(), keys=genes_ranked.keys()).reset_index()
+ranked_merged.columns = ['st' if x == 'level_0' else x for x in ranked_merged.columns]
 ranked_merged['locus_tag_simplified'] = ranked_merged['locus_tag'].map(lambda x: x.split("'")[1])
 # Process genic and intergenic regions separately
 ranked_merged_intergenic = ranked_merged[ranked_merged['intergenic']]
 ranked_merged_genic = ranked_merged[~ranked_merged['intergenic']]
-#
-homolog_genic = []
-homolog_intergenic = []
-homolog_ranks_intergenic = []
-homolog_ranks_genic = []
+
+# TODO OOP :<
+homolog_genic, homolog_intergenic = [], []
+homolog_ranks_genic, homolog_ranks_intergenic = [], []
+homolog_ranks_all_genic, homolog_ranks_all_intergenic = [], []
 for c in nx.connected_components(G):
     homolog_genic.append(tuple(sorted(c)))
     homolog_intergenic.append(tuple(sorted(c)))
@@ -81,6 +92,21 @@ for c in nx.connected_components(G):
     # Get mean rank of all locus_tags that are in the homologs connected component
     homolog_ranks_genic.append(ranked_merged_genic.loc[ranked_merged_genic['locus_tag_simplified'].isin(c), 'rank_norm'].mean())
     homolog_ranks_intergenic.append(ranked_merged_intergenic.loc[ranked_merged_intergenic['locus_tag_simplified'].isin(c), 'rank_norm'].mean())
+    #
+    homolog_ranks_all_genic.append(
+            tuple(zip(
+                tuple(ranked_merged_genic.loc[ranked_merged_genic['locus_tag_simplified'].isin(c), 'st']), 
+                tuple(ranked_merged_genic.loc[ranked_merged_genic['locus_tag_simplified'].isin(c), 'rank_norm']),
+                tuple(ranked_merged_genic.loc[ranked_merged_genic['locus_tag_simplified'].isin(c), 'n_homoplasic_acctran'])
+            ))
+    )
+    homolog_ranks_all_intergenic.append(
+            tuple(zip(
+                tuple(ranked_merged_intergenic.loc[ranked_merged_intergenic['locus_tag_simplified'].isin(c), 'st']), 
+                tuple(ranked_merged_intergenic.loc[ranked_merged_intergenic['locus_tag_simplified'].isin(c), 'rank_norm']),
+                tuple(ranked_merged_intergenic.loc[ranked_merged_intergenic['locus_tag_simplified'].isin(c), 'n_homoplasic_acctran'])
+            ))
+    )
 
 # Get gene and product annotations for locus tags
 print('Getting annotations for loci...')
@@ -116,6 +142,7 @@ genic_summary = pd.DataFrame({
     'homologs': homolog_genic, 
     'genes': [tuple(locus_annotations[locus_tag]['gene'] for locus_tag in homologs) for homologs in homolog_genic], 
     'products': [tuple(locus_annotations[locus_tag]['product'] for locus_tag in homologs) for homologs in homolog_genic], 
+    'rank_norms': homolog_ranks_all_genic, 
     'mean_rank_norm': homolog_ranks_genic, 
     'known_hp_harris_et_al_2010': [any(locus in set(known_hps_annotated_genic['locus_tag_simplified']) for locus in homologs) for homologs in homolog_genic]
 }).sort_values('mean_rank_norm', ascending=False)
@@ -125,11 +152,15 @@ intergenic_summary = pd.DataFrame({
     'homologs': homolog_intergenic, 
     'genes': [tuple(locus_annotations[locus_tag]['gene'] for locus_tag in homologs) for homologs in homolog_intergenic], 
     'products': [tuple(locus_annotations[locus_tag]['product'] for locus_tag in homologs) for homologs in homolog_intergenic], 
+    'rank_norms': homolog_ranks_all_intergenic, 
     'mean_rank_norm': homolog_ranks_intergenic, 
     'known_hp_harris_et_al_2010': [any(locus in set(known_hps_annotated_intergenic['locus_tag_simplified']) for locus in homologs) for homologs in homolog_intergenic]
 }).sort_values('mean_rank_norm', ascending=False)
 #
-print('Marked {} homolog groups (genic), {} intergenic.'.format(genic_summary['known_hp_harris_et_al_2010'].sum(), intergenic_summary['known_hp_harris_et_al_2010'].sum()))
+print('Marked {} ranked homolog groups (genic), {} intergenic.'.format(
+    genic_summary[~pd.isnull(genic_summary.mean_rank_norm)]['known_hp_harris_et_al_2010'].sum(), 
+    intergenic_summary[~pd.isnull(intergenic_summary.mean_rank_norm)]['known_hp_harris_et_al_2010'].sum()
+))
 
 # Missing value of mean_rank_norm means none of the locus tags in the homology group were present after filtering
 genic_summary.to_csv('/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/3_find_candidates/hp_homologs_summary_genic.csv')

@@ -128,6 +128,8 @@ for short_prefix, locus_tags in to_plot.items():
         # Check if there are any snps associated with the locus at all
         if len(meta):
             meta.loc[meta['snp'] == '.', 'snp_full'] = meta.loc[meta['snp'] == '.'].apply(lambda row: loc_to_ref_base[row['loc']], axis=1)
+        else:
+            print('~~~ WARNING: no sites associated with locus_tag: {} ~~~'.format(locus_tag))
 
         # Mark homoplasic sites
         print('{}: {}: Marking homoplasic sites...'.format(short_prefix, locus_tag))
@@ -198,6 +200,9 @@ for short_prefix, locus_tags in to_plot.items():
             out_pdf_dir, out_pdf = os.path.split(out_pdf_template.format(prefix=prefixes[short_prefix], locus_tag=locus_tag))
             os.makedirs(out_pdf_dir, exist_ok=True)
 
+            start = min(locus_tag_to_bounds[locus_tag][0], min(meta['loc'])) if len(meta['loc']) else locus_tag_to_bounds[locus_tag][0]
+            end = max(locus_tag_to_bounds[locus_tag][1], max(meta['loc'])) if len(meta['loc']) else locus_tag_to_bounds[locus_tag][1]
+
             cmd = ' '.join(
                 bsub + (
                     r'python2 {reportlabtest_script}',
@@ -212,8 +217,8 @@ for short_prefix, locus_tags in to_plot.items():
             ).format(
                 reportlabtest_script=reportlabtest_script,
                 tree=tree_files[short_prefix],
-                start=min(locus_tag_to_bounds[locus_tag][0], min(meta['loc'])), 
-                end=max(locus_tag_to_bounds[locus_tag][1], max(meta['loc'])), 
+                start=start,
+                end=end, 
                 #  pdf='test.pdf',
                 pdf=os.path.join(out_pdf_dir, out_pdf),
                 #  tab='test.tab', 
