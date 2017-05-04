@@ -17,11 +17,18 @@ declare -a embls=(
     '/lustre/scratch118/infgen/team81/dj9/staph.aureus/ben/st8/CC8_USA300_FPR3757.embl'
 )
 # acctran trees
+# declare -a trees=(
+    # "/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/2_homoplasy/reconstruct_snps_on_tree/acctran/S.aureus_ST22_BSAC_Pfizer/S.aureus_ST22_BSAC_Pfizer_acctran_steps.tre" 
+    # "/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/2_homoplasy/reconstruct_snps_on_tree/acctran/S.aureus_ST239_global_Singapore_Pfizer/S.aureus_ST239_global_Singapore_Pfizer_intergenic_acctran_steps.tre" 
+    # "/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/2_homoplasy/reconstruct_snps_on_tree/acctran/S.aureus_ST30_BSAC_Pfizer/S.aureus_ST30_BSAC_Pfizer_acctran_steps.tre" 
+    # "/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/2_homoplasy/reconstruct_snps_on_tree/acctran/S.aureus_ST8_BSAC_Pfizer_revised/S.aureus_ST8_BSAC_Pfizer_revised_acctran_steps.tre" 
+# )
+# raxml trees
 declare -a trees=(
-    "/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/2_homoplasy/reconstruct_snps_on_tree/acctran/S.aureus_ST22_BSAC_Pfizer/S.aureus_ST22_BSAC_Pfizer_acctran_steps.tre" 
-    "/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/2_homoplasy/reconstruct_snps_on_tree/acctran/S.aureus_ST239_global_Singapore_Pfizer/S.aureus_ST239_global_Singapore_Pfizer_intergenic_acctran_steps.tre" 
-    "/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/2_homoplasy/reconstruct_snps_on_tree/acctran/S.aureus_ST30_BSAC_Pfizer/S.aureus_ST30_BSAC_Pfizer_acctran_steps.tre" 
-    "/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/2_homoplasy/reconstruct_snps_on_tree/acctran/S.aureus_ST8_BSAC_Pfizer_revised/S.aureus_ST8_BSAC_Pfizer_revised_acctran_steps.tre" 
+    "/nfs/users/nfs_b/bb9/workspace/rotation3/data/st22/RAxML_bestTree.ml_S.aureus_ST22_BSAC_Pfizer"
+    "/nfs/users/nfs_b/bb9/workspace/rotation3/data/st239/RAxML_bestTree.ml_S.aureus_ST239_global_Singapore_Pfizer"
+    "/nfs/users/nfs_b/bb9/workspace/rotation3/data/st30/RAxML_bestTree.ml_S.aureus_ST30_BSAC_Pfizer"
+    "/nfs/users/nfs_b/bb9/workspace/rotation3/data/st8/revised_lane_list/RAxML_bestTree.ml_S.aureus_ST8_BSAC_Pfizer_revised"
 )
 declare -a prefixes=(
     'S.aureus_ST22_BSAC_Pfizer' \
@@ -37,6 +44,7 @@ declare -a prefixes=(
 #the -m option. 
 
                 # -b 2941669 -e 2944488 \
+                # -o "$prefix.homoplasies_on_acctran_steps_tree.pdf" \
 for (( i = 0; i < ${#trees[@]}; i++ )); do
     tree="${trees[$i]}"
     embl="${embls[$i]}"
@@ -59,7 +67,7 @@ for (( i = 0; i < ${#trees[@]}; i++ )); do
                 -q taxa \
                 -l 2 -A 2 -E 5 \
                 -a 2 -L left \
-                -o "$prefix.homoplasies_on_acctran_steps_tree.pdf" \
+                -o "$prefix.homoplasies_on_RAxML_bestTree.ml_tree.pdf" \
                 "$tab" "$embl"
     echo Finished $prefix at $(date)
 done

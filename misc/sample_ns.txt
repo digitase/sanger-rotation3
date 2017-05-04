@@ -12,3 +12,10 @@ bb9@pcs5a:/lustre/scratch118/infgen/team81/dj9/staph.aureus/ben$ wc -l st*/seq_t
 19 st8/seq_tags_bsac
 334 st8/seq_tags_pfizer
 1942 total
+
+bb9@pcs5a:/lustre/scratch118/infgen/team81/dj9/staph.aureus/ben$ wc -l st*/*no_mge_snp.aln
+1744 st22/S.aureus_ST22_BSAC_Pfizer_no_mge_snp.aln
+758 st239/S.aureus_ST239_global_Singapore_Pfizer_no_mge_snp.aln
+682 st30/S.aureus_ST30_BSAC_Pfizer_no_mge_snp.aln
+708 st8/S.aureus_ST8_BSAC_Pfizer_no_mge_snp.aln
+3892 total
