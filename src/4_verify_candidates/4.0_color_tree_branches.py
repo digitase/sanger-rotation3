@@ -19,18 +19,26 @@ prefixes = {
 tree_file_template = "/lustre/scratch118/infgen/team81/bb9/2_homoplasy/reconstruct_snps_on_tree/{transformation}/{prefix}/{prefix}_{transformation}_steps.tre"
 changes_file_template = "/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/2_homoplasy/summarise_homoplasies/{prefix}/{prefix}_homoplasies_on_tree.{transformation}.csv"
 snps_file_template = "/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/2_homoplasy/summarise_snps/{prefix}/{prefix}.out"
-out_pdf_template = "/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/4_verify_candidates/plots/{prefix}/{prefix}.{transformation}.loc_{loc}.pdf"
+out_pdf_template = "/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/4_verify_candidates/plots_sites/{prefix}.{transformation}.loc_{loc}.pdf"
 
 colors = {'A': 'green', 'C': 'blue', 'G': 'black', 'T': 'red'}
 transformations = ['acctran', 'deltran']
 #
 # example locs to plot for each st: top 3 highest number of acctran homoplasies
-locs = {
-    'st22': [1657694, 2737457, 696772],
-    'st239': [657724, 588326, 7255],
-    'st30': [665773, 124173, 2459525],
-    'st8': [2031077, 1074221, 1074250]
-}
+#  locs = {
+    #  'st22': [1657694, 2737457, 696772],
+    #  'st239': [657724, 588326, 7255],
+    #  'st30': [665773, 124173, 2459525],
+    #  'st8': [2031077, 1074221, 1074250]
+#  }
+
+#
+# Results from ../3_find_candidates/2.0_compare_strains_by_site.py output
+#
+locs = collections.defaultdict(list) 
+locs_df = pd.read_csv('/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/3_find_candidates/hp_sites_summary.csv')
+for _, row in locs_df.iterrows():
+    locs[row['level_0']].append(row['loc_in_alignment'])
 
 for short_prefix, locs in locs.items():
     print('Parsing snps file...')
