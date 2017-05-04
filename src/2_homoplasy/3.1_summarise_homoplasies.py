@@ -13,6 +13,8 @@ import pybedtools
 
 def get_homoplasies(df, keep_all_sites=False):
     '''Find homoplasic sites
+
+    df: Dataframe of every change on the tree
     '''
     #
     df = df.copy()
@@ -34,23 +36,58 @@ def get_homoplasies(df, keep_all_sites=False):
     # Summarise info at unique positions
     # 
     # Count number of changes with the following properties:
-    # convergence = SNP final base is the same as another SNP's final base
+    # convergence = SNP final base is the same as another SNP's final base. Use n-1, as in a pair of changes, 1 change alone is not a convergence
     # reversal = SNP final base reverts to ancestral base of another change e.g. loc=56478, st22
     # reversed = An ancestral change that is reversed in a descendent. Opposite to reversal.
     # other = non convergence, non reversal/reversed changes
+
+    #  def interpret_hps(loc_df):
+        #  '''Given a df of changes at a location, parse and tally homoplasies
+        #  '''
+        #  n_convergence, n_reversal, n_both, n_non_homoplasic, n_total = (0, 0, 0, 0, 0)
+        # Group by final base (convergence groups)
+        #  loc_df['SNP_after'] = loc_df['SNP'].map(lambda x: x.split('->')[1])
+        #  for snp, snp_df in loc_df.groupby('SNP_after'):
+            #  n_total_snp = len(snp_df)
+            #  n_convergence_snp = len([x for x in snp_df['homoplasy'] if 'convergence' in x])
+            # Not possible to have a convergence with only a single change
+            #  assert(n_convergence_snp == 0 or n_convergence_snp >= 2)
+            # n-1 to correct for first change in a convergence group
+            #  if n_convergence_snp: n_convergence_snp -= 1
+            # no need for n-1 as 'reversed is not counted'
+            #  n_reversal_snp = len([x for x in snp_df['homoplasy'] if 'reversal' in x])
+            # n_both_snp is ambiguous, as it depends on which convergence is not counted in the n-1
+            # hence n_non_homoplasic is also ambiguous
+            #
+            #  n_convergence += n_convergence_snp
+            #  n_reversal += n_reversal_snp
+            #  n_total += n_total_snp
+        #  return({'n_convergence': n_convergence, 'n_reversal': n_reversal, 'n_total': n_total})
+    
+    # Group by final base (convergence groups)
+    df['SNP_after'] = df['SNP'].map(lambda x: x.split('->')[1])
+
     print('Summarising homoplasies...')
     hp = pd.DataFrame()
     hp = hp.assign(
         change=df.groupby('loc').apply(lambda x: collections.Counter(x['change'])),
-        n_convergence=df.groupby('loc').apply(lambda x: sum('convergence' in snp for snp in x['homoplasy'])),
+        # Subtract 1 for each convergence group, as the first change in a group is not a convergence
+        n_convergence=df.groupby('loc').apply(lambda x: 
+            max(
+                0,
+                sum('convergence' in snp for snp in x['homoplasy']) - len(x[x['SNP_after'].duplicated()]['SNP_after'].unique())
+            )
+        ),
         n_reversal=df.groupby('loc').apply(lambda x: sum('reversal' in snp for snp in x['homoplasy'])),
-        n_both=df.groupby('loc').apply(lambda x: sum('convergence' in snp and 'reversal' in snp for snp in x['homoplasy'])),
-        n_homoplasic=df.groupby('loc').apply(lambda x: sum('convergence' in snp or 'reversal' in snp for snp in x['homoplasy'])),
-        n_non_homoplasic=df.groupby('loc').apply(lambda x: sum(not 'convergence' in snp and not 'reversal' in snp for snp in x['homoplasy'])),
-        n_total=df.groupby('loc').apply(lambda x: len(x['homoplasy'])),
-        #  branches=df.groupby('loc').apply(lambda x: tuple(x['homoplasy']))
+        #  n_both=df.groupby('loc').apply(lambda x: sum('convergence' in snp and 'reversal' in snp for snp in x['homoplasy'])),
+        #  n_homoplasic=df.groupby('loc').apply(lambda x: sum('convergence' in snp or 'reversal' in snp for snp in x['homoplasy'])),
+        #  n_non_homoplasic=df.groupby('loc').apply(lambda x: sum(not 'convergence' in snp and not 'reversal' in snp for snp in x['homoplasy'])),
+        n_total=df.groupby('loc').apply(lambda x: len(x)),
     )
     #
+    hp = hp.assign(
+        n_homoplasic=hp['n_convergence'] + hp['n_reversal']
+    )
     return(hp)
 
 #  def build_intervaltree(features):
@@ -217,13 +254,14 @@ if __name__ == "__main__":
         for t in transformations:
             print(t)
             df = dfs[t].loc[prefix]
-            print('{}: {} features in .tab file.'.format(prefix, len(df)))
+            print('{}: {} features (changes) in .tab file.'.format(prefix, len(df)))
             hp = get_homoplasies(df, keep_all_sites=True)
             print('{}: {} sites in .tab file.'.format(prefix, len(hp)))
-            print('{}: {} homoplasic sites in .tab file.'.format(prefix, len(hp.query('n_total > 1'))))
+            print('{}: {} homoplasic sites in .tab file.'.format(prefix, len(hp.query('n_convergence > 0 | n_reversal > 0'))))
+            #
             # Check the counts are partitioned right
-            assert(all(hp[hp['n_convergence'] + hp['n_reversal'] - hp['n_both'] + hp['n_non_homoplasic'] == hp['n_total']]))
-            assert(all(hp[hp['n_homoplasic'] + hp['n_non_homoplasic'] == hp['n_total']]))
+            #  assert(all(hp[hp['n_convergence'] + hp['n_reversal'] - hp['n_both'] + hp['n_non_homoplasic'] == hp['n_total']]))
+            #  assert(all(hp[hp['n_homoplasic'] + hp['n_non_homoplasic'] == hp['n_total']]))
             #
             hps[t] = hp
 
@@ -245,9 +283,11 @@ if __name__ == "__main__":
         #  'reversal from branch leading to 362'],
         #
         #  assert(all(hp_merged['n_non_homoplasic_acctran'] == hp_merged['n_non_homoplasic_deltran']))
-        hp_merged['agree_acctran_deltran'] = ((hp_merged['n_convergence_acctran'] == hp_merged['n_convergence_deltran']) &
-                                        (hp_merged['n_reversal_acctran'] == hp_merged['n_reversal_deltran']) &
-                                        (hp_merged['n_both_acctran'] == hp_merged['n_both_deltran']))
+        hp_merged['agree_acctran_deltran'] = (
+            (hp_merged['n_convergence_acctran'] == hp_merged['n_convergence_deltran']) 
+            & (hp_merged['n_reversal_acctran'] == hp_merged['n_reversal_deltran']) 
+            #  & (hp_merged['n_both_acctran'] == hp_merged['n_both_deltran'])
+        )
 
         # Annotate sites
         hp_merged = annotate_homoplasies(hp_merged, embl_files[prefix])
@@ -293,8 +333,8 @@ if __name__ == "__main__":
         genes['n_convergence_deltran'] = hp_merged.groupby(summary_series)['n_convergence_deltran'].apply(sum)
         genes['n_reversal_acctran'] = hp_merged.groupby(summary_series)['n_reversal_acctran'].apply(sum)
         genes['n_reversal_deltran'] = hp_merged.groupby(summary_series)['n_reversal_deltran'].apply(sum)
-        genes['n_both_acctran'] = hp_merged.groupby(summary_series)['n_both_acctran'].apply(sum)
-        genes['n_both_deltran'] = hp_merged.groupby(summary_series)['n_both_deltran'].apply(sum)
+        #  genes['n_both_acctran'] = hp_merged.groupby(summary_series)['n_both_acctran'].apply(sum)
+        #  genes['n_both_deltran'] = hp_merged.groupby(summary_series)['n_both_deltran'].apply(sum)
         genes['n_homoplasic_acctran'] = hp_merged.groupby(summary_series)['n_homoplasic_acctran'].apply(sum)
         genes['n_homoplasic_deltran'] = hp_merged.groupby(summary_series)['n_homoplasic_deltran'].apply(sum)
         # n_total is number of changes at a site (summed for all sites in the gene), giving number of changes in a gene
