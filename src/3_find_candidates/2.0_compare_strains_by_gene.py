@@ -34,22 +34,23 @@ for short_prefix, gene in genes.items():
     # Filter for loci in the top 20% of number of homoplasies
     min_hp_thresh_quantile = 0.5
     min_hp_thresh = gene.loc[gene.ranker > 0, 'n_homoplasic_sites'].quantile(min_hp_thresh_quantile)
-    print('min_hp_thresh: {}, equiv. quantile: {}'.format(min_hp_thresh, min_hp_thresh_quantile))
-    gene = gene.loc[(gene['ranker'] > 0) & (gene['n_homoplasic_sites'] > min_hp_thresh)].copy()
+    print('min_hp_thresh: >= {}, equiv. quantile: {}'.format(min_hp_thresh, min_hp_thresh_quantile))
+    gene = gene.loc[(gene['ranker'] > 0) & (gene['n_homoplasic_sites'] >= min_hp_thresh)].copy()
     gene['rank'] = gene['ranker'].rank(method='average')
     # Use normalised rank as number of ranked genes differ between strains
     gene['rank_norm'] = gene['rank'] / len(gene['rank'])
     genes_ranked[short_prefix] = gene
 
-for short_prefix, gene in genes.items():
-    # Get some simple summary stats
-    print(short_prefix)
-    print(gene.iloc[:, [7, 10, 11, 12, 13, 14]].apply(sum))
-    print('agree_prop_acctran_deltran mean: {}'.format(gene.loc[gene.n_homoplasic_sites.astype(bool), 'agree_prop_acctran_deltran'].mean()))
-    print('n genes with homoplasies: {}'.format(len(gene.loc[(gene.n_homoplasic_sites.astype(bool)) & ~gene.intergenic])))
-    print('n genes: {}'.format(len(~gene.intergenic)))
-    print('n near-gene-regions with homoplasies: {}'.format(len(gene.loc[(gene.n_homoplasic_sites.astype(bool)) & gene.intergenic])))
-    print('n near-gene-regions: {}'.format(len(gene.intergenic)))
+with open('/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/3_find_candidates/hp_homologs_summary_stats.txt', 'w') as stats_file:
+    for short_prefix, gene in genes.items():
+        # Get some simple summary stats
+        print('~~~ {} ~~~'.format(short_prefix), file=stats_file)
+        print(gene.iloc[:, [7, 10, 11, 12, 13, 14]].apply(sum), file=stats_file)
+        print('agree_prop_acctran_deltran mean: {}'.format(gene.loc[gene.n_homoplasic_sites.astype(bool), 'agree_prop_acctran_deltran'].mean()), file=stats_file)
+        print('n genes with homoplasies: {}'.format(len(gene.loc[(gene.n_homoplasic_sites.astype(bool)) & ~gene.intergenic])), file=stats_file)
+        print('n genes: {}'.format(len(~gene.intergenic)), file=stats_file)
+        print('n near-gene-regions with homoplasies: {}'.format(len(gene.loc[(gene.n_homoplasic_sites.astype(bool)) & gene.intergenic])), file=stats_file)
+        print('n near-gene-regions: {}'.format(len(gene.intergenic)), file=stats_file)
 
 # Read in reciprocal best hits tables and build adjaceny graph
 print('Constructing homology graph...')
@@ -98,6 +99,7 @@ for c in nx.connected_components(G):
     homolog_ranks_all_genic.append(
             tuple(zip(
                 tuple(ranked_merged_genic.loc[ranked_merged_genic['locus_tag_simplified'].isin(c), 'st']), 
+                tuple(ranked_merged_genic.loc[ranked_merged_genic['locus_tag_simplified'].isin(c), 'locus_tag_simplified']), 
                 tuple(ranked_merged_genic.loc[ranked_merged_genic['locus_tag_simplified'].isin(c), 'rank_norm']),
                 tuple(ranked_merged_genic.loc[ranked_merged_genic['locus_tag_simplified'].isin(c), 'n_homoplasic_sites'])
             ))
@@ -105,6 +107,7 @@ for c in nx.connected_components(G):
     homolog_ranks_all_intergenic.append(
             tuple(zip(
                 tuple(ranked_merged_intergenic.loc[ranked_merged_intergenic['locus_tag_simplified'].isin(c), 'st']), 
+                tuple(ranked_merged_intergenic.loc[ranked_merged_intergenic['locus_tag_simplified'].isin(c), 'locus_tag_simplified']), 
                 tuple(ranked_merged_intergenic.loc[ranked_merged_intergenic['locus_tag_simplified'].isin(c), 'rank_norm']),
                 tuple(ranked_merged_intergenic.loc[ranked_merged_intergenic['locus_tag_simplified'].isin(c), 'n_homoplasic_sites'])
             ))
@@ -145,6 +148,7 @@ genic_summary = pd.DataFrame({
     'genes': [tuple(locus_annotations[locus_tag]['gene'] for locus_tag in homologs) for homologs in homolog_genic], 
     'products': [tuple(locus_annotations[locus_tag]['product'] for locus_tag in homologs) for homologs in homolog_genic], 
     'rank_norms': homolog_ranks_all_genic, 
+    'n_sts': [len(x) for x in homolog_ranks_all_genic],
     'mean_rank_norm': homolog_ranks_genic, 
     'known_hp_harris_et_al_2010': [any(locus in set(known_hps_annotated_genic['locus_tag_simplified']) for locus in homologs) for homologs in homolog_genic]
 }).sort_values('mean_rank_norm', ascending=False)
@@ -155,6 +159,7 @@ intergenic_summary = pd.DataFrame({
     'genes': [tuple(locus_annotations[locus_tag]['gene'] for locus_tag in homologs) for homologs in homolog_intergenic], 
     'products': [tuple(locus_annotations[locus_tag]['product'] for locus_tag in homologs) for homologs in homolog_intergenic], 
     'rank_norms': homolog_ranks_all_intergenic, 
+    'n_sts': [len(x) for x in homolog_ranks_all_intergenic],
     'mean_rank_norm': homolog_ranks_intergenic, 
     'known_hp_harris_et_al_2010': [any(locus in set(known_hps_annotated_intergenic['locus_tag_simplified']) for locus in homologs) for homologs in homolog_intergenic]
 }).sort_values('mean_rank_norm', ascending=False)
