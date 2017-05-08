@@ -38,7 +38,7 @@ embl_files = {
     "st8": "/nfs/users/nfs_b/bb9/workspace/rotation3/data/st8/CC8_USA300_FPR3757.embl",
 }
 #  out_tab_template = "/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/4_verify_candidates/plots/{prefix}/{prefix}.locus_tag_{locus_tag}.tab"
-out_pdf_template = "/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/4_verify_candidates/plots_reportlabtest/homologs/{prefix}/{prefix}.locus_tag_{locus_tag}.pdf"
+out_pdf_template = "/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/4_verify_candidates/plots_homologs/{prefix}/{prefix}.locus_tag_{locus_tag}.pdf"
 # Dir to store intermediate files in
 tmp_dir = '/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/tmp/'
 
@@ -55,25 +55,26 @@ tmp_dir = '/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/tmp/'
 
 # Loci in top 10 homologous sets
 to_plot_str = '''
-('SAR0370', 'SATW20_08950')
-('SAR1827', 'SATW20_27080')
-('SAR0373', 'SAUSA300_0808')
-('SAR0372', 'SAUSA300_0807')
-('SAEMRSA1519360', 'SAR0381', 'SATW20_09070', 'SATW20_20110')
-('SAR0378', 'SATW20_09030')
-('SAR1826', 'SATW20_27070')
-('SAR0377', 'SATW20_09020')
-('SAEMRSA1519350', 'SAR0382', 'SATW20_09080', 'SATW20_20100', 'SAUSA300_1981')
-('SAEMRSA1512890', 'SAR1439', 'SATW20_14270', 'SAUSA300_1319')
+(('st8', 'SAUSA300_2522', 0.98519163763066198, 2), ('st22', 'SAEMRSA1524880', 0.96808510638297873, 2))
+(('st8', 'SAUSA300_1981', 0.89372822299651566, 36), ('st22', 'SAEMRSA1519350', 0.97678916827853002, 42))
+(('st8', 'SAUSA300_1129', 0.83362369337979092, 1), ('st22', 'SAEMRSA1510690', 0.92456479690522242, 1))
+(('st239', 'SATW20_01210', 0.9732142857142857, 1), ('st22', 'SAEMRSA1500750', 0.72823984526112184, 1))
+(('st8', 'SAUSA300_2565', 0.8850174216027874, 54), ('st239', 'SATW20_27680', 0.65476190476190477, 36), ('st22', 'SAEMRSA1525350', 0.8916827852998066, 48))
+(('st8', 'SAUSA300_0224', 0.80836236933797911, 14), ('st239', 'SATW20_02310', 0.59226190476190477, 9), ('st22', 'SAEMRSA1501880', 0.8936170212765957, 25))
+(('st239', 'SATW20_11990', 0.875, 1), ('st22', 'SAEMRSA1510380', 0.6479690522243714, 1))
+(('st8', 'SAUSA300_0547', 0.70209059233449478, 45), ('st239', 'SATW20_06320', 0.6428571428571429, 21), ('st22', 'SAEMRSA1504890', 0.88974854932301739, 73))
+(('st8', 'SAUSA300_0546', 0.77177700348432055, 33), ('st239', 'SATW20_06310', 0.5357142857142857, 13), ('st22', 'SAEMRSA1504880', 0.85880077369439067, 45))
+(('st8', 'SAUSA300_0113', 0.87456445993031362, 41), ('st239', 'SATW20_01230', 0.38988095238095238, 6), ('st22', 'SAEMRSA1500770', 0.89748549323017413, 43))
 '''
+
 # Lazy way of plotting copypastas from .csv files open in Excel
 to_plot_tuple = functools.reduce(lambda x, y: x+y, [eval(x) for x in to_plot_str.strip().split('\n')])
 #
 to_plot = {
-    'st22' : [x for x in to_plot_tuple if x.startswith('SAEMRSA')],
-    'st239': [x for x in to_plot_tuple if x.startswith('SATW20_')],
-    'st30' : [x for x in to_plot_tuple if x.startswith('SAR')],
-    'st8'  : [x for x in to_plot_tuple if x.startswith('SAUSA300_')],
+    'st22' : [x[1] for x in to_plot_tuple if x[1].startswith('SAEMRSA')],
+    'st239': [x[1] for x in to_plot_tuple if x[1].startswith('SATW20_')],
+    'st30' : [x[1] for x in to_plot_tuple if x[1].startswith('SAR')],
+    'st8'  : [x[1] for x in to_plot_tuple if x[1].startswith('SAUSA300_')],
 }
 
 #
@@ -239,6 +240,8 @@ for short_prefix, locus_tags in to_plot.items():
 
         finally:
             # TODO Can't remove .tab files before bsub job completes...
+            # TODO create cleanup script
             if not len(bsub[0]):
                 os.remove(tmp_tab_file)
+
 
