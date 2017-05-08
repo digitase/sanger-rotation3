@@ -8,7 +8,7 @@ import pandas as pd
 prefixes = {
     "st22": "S.aureus_ST22_BSAC_Pfizer",
     "st239": "S.aureus_ST239_global_Singapore_Pfizer",
-    "st30": "S.aureus_ST30_BSAC_Pfizer",
+    #  "st30": "S.aureus_ST30_BSAC_Pfizer",
     "st8": "S.aureus_ST8_BSAC_Pfizer_revised"
 }
 hp_file_template = "/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/2_homoplasy/summarise_homoplasies/{prefix}/{short_prefix}_homoplasies.csv"

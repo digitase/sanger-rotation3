@@ -11,7 +11,7 @@ import networkx as nx
 prefixes = {
     "st22": "S.aureus_ST22_BSAC_Pfizer",
     "st239": "S.aureus_ST239_global_Singapore_Pfizer",
-    "st30": "S.aureus_ST30_BSAC_Pfizer",
+    #  "st30": "S.aureus_ST30_BSAC_Pfizer",
     "st8": "S.aureus_ST8_BSAC_Pfizer_revised"
 }
 genes_file_template = "/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/2_homoplasy/summarise_homoplasies/{prefix}/{short_prefix}_homoplasies_per_gene.csv"
@@ -28,12 +28,14 @@ genes = dict((short_prefix, pd.read_csv(genes_file_template.format(prefix=prefix
 print('Ranking loci...')
 genes_ranked = {}
 for short_prefix, gene in genes.items():
-    # Rank genes by: (agree_prop_acctran_deltran * n_homoplasic_acctran)/n_total
+    # Rank genes by: (agree_prop_acctran_deltran * n_homoplasic_sites)/n_sites
     gene = genes[short_prefix]
-    gene.loc[:, 'ranker'] = gene['agree_prop_acctran_deltran'] * gene['n_homoplasic_acctran'] / gene['n_total']
+    gene.loc[:, 'ranker'] = gene['agree_prop_acctran_deltran'] * gene['n_homoplasic_sites'] / gene['n_sites']
     # Filter for loci in the top 20% of number of homoplasies
-    min_hp_thresh = gene.loc[gene.ranker > 0, 'n_homoplasic_acctran'].quantile(0.8)
-    gene = gene.loc[(gene['ranker'] > 0) & (gene['n_homoplasic_acctran'] > min_hp_thresh)].copy()
+    min_hp_thresh_quantile = 0.5
+    min_hp_thresh = gene.loc[gene.ranker > 0, 'n_homoplasic_sites'].quantile(min_hp_thresh_quantile)
+    print('min_hp_thresh: {}, equiv. quantile: {}'.format(min_hp_thresh, min_hp_thresh_quantile))
+    gene = gene.loc[(gene['ranker'] > 0) & (gene['n_homoplasic_sites'] > min_hp_thresh)].copy()
     gene['rank'] = gene['ranker'].rank(method='average')
     # Use normalised rank as number of ranked genes differ between strains
     gene['rank_norm'] = gene['rank'] / len(gene['rank'])
@@ -42,11 +44,11 @@ for short_prefix, gene in genes.items():
 for short_prefix, gene in genes.items():
     # Get some simple summary stats
     print(short_prefix)
-    print(gene.iloc[:, [7, 10, 11, 12, 13, 14, 15, 16, 17, 18]].apply(sum))
-    print('agree_prop_acctran_deltran mean: {}'.format(gene.loc[gene.n_homoplasic_acctran.astype(bool) | gene.n_homoplasic_deltran.astype(bool), 'agree_prop_acctran_deltran'].mean()))
-    print('n genes with homoplasies: {}'.format(len(gene.loc[(gene.n_homoplasic_acctran.astype(bool) | gene.n_homoplasic_deltran.astype(bool)) & ~gene.intergenic])))
+    print(gene.iloc[:, [7, 10, 11, 12, 13, 14]].apply(sum))
+    print('agree_prop_acctran_deltran mean: {}'.format(gene.loc[gene.n_homoplasic_sites.astype(bool), 'agree_prop_acctran_deltran'].mean()))
+    print('n genes with homoplasies: {}'.format(len(gene.loc[(gene.n_homoplasic_sites.astype(bool)) & ~gene.intergenic])))
     print('n genes: {}'.format(len(~gene.intergenic)))
-    print('n near-gene-regions with homoplasies: {}'.format(len(gene.loc[(gene.n_homoplasic_acctran.astype(bool) | gene.n_homoplasic_deltran.astype(bool)) & gene.intergenic])))
+    print('n near-gene-regions with homoplasies: {}'.format(len(gene.loc[(gene.n_homoplasic_sites.astype(bool)) & gene.intergenic])))
     print('n near-gene-regions: {}'.format(len(gene.intergenic)))
 
 # Read in reciprocal best hits tables and build adjaceny graph
@@ -71,7 +73,7 @@ G = nx.from_edgelist(rbh_edges).to_undirected()
 #
 #  For groups of homologous loci,
 #  obtain mean rank (normalised to 0-1, non-homoplasic sites ignored) over strains,
-#  ranking by (agree_prop_acctran_deltran * n_homoplasic_acctran)/n_total
+#  ranking by (agree_prop_acctran_deltran * n_homoplasic_sites)/n_total
 #
 print('Aggregating ranks...')
 ranked_merged = pd.concat(genes_ranked.values(), keys=genes_ranked.keys()).reset_index()
@@ -97,14 +99,14 @@ for c in nx.connected_components(G):
             tuple(zip(
                 tuple(ranked_merged_genic.loc[ranked_merged_genic['locus_tag_simplified'].isin(c), 'st']), 
                 tuple(ranked_merged_genic.loc[ranked_merged_genic['locus_tag_simplified'].isin(c), 'rank_norm']),
-                tuple(ranked_merged_genic.loc[ranked_merged_genic['locus_tag_simplified'].isin(c), 'n_homoplasic_acctran'])
+                tuple(ranked_merged_genic.loc[ranked_merged_genic['locus_tag_simplified'].isin(c), 'n_homoplasic_sites'])
             ))
     )
     homolog_ranks_all_intergenic.append(
             tuple(zip(
                 tuple(ranked_merged_intergenic.loc[ranked_merged_intergenic['locus_tag_simplified'].isin(c), 'st']), 
                 tuple(ranked_merged_intergenic.loc[ranked_merged_intergenic['locus_tag_simplified'].isin(c), 'rank_norm']),
-                tuple(ranked_merged_intergenic.loc[ranked_merged_intergenic['locus_tag_simplified'].isin(c), 'n_homoplasic_acctran'])
+                tuple(ranked_merged_intergenic.loc[ranked_merged_intergenic['locus_tag_simplified'].isin(c), 'n_homoplasic_sites'])
             ))
     )
 
@@ -157,7 +159,7 @@ intergenic_summary = pd.DataFrame({
     'known_hp_harris_et_al_2010': [any(locus in set(known_hps_annotated_intergenic['locus_tag_simplified']) for locus in homologs) for homologs in homolog_intergenic]
 }).sort_values('mean_rank_norm', ascending=False)
 #
-print('Marked {} ranked homolog groups (genic), {} intergenic.'.format(
+print('Marked known {} ranked homolog groups (genic), {} intergenic.'.format(
     genic_summary[~pd.isnull(genic_summary.mean_rank_norm)]['known_hp_harris_et_al_2010'].sum(), 
     intergenic_summary[~pd.isnull(intergenic_summary.mean_rank_norm)]['known_hp_harris_et_al_2010'].sum()
 ))
