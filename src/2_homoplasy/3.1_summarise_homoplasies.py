@@ -351,15 +351,20 @@ if __name__ == "__main__":
         genes['n_convergence_sites_deltran'] = hp_merged.groupby(summary_series)['n_convergence_deltran'].apply(lambda x: x.astype(bool).sum())
         genes['n_reversal_sites_acctran'] = hp_merged.groupby(summary_series)['n_reversal_acctran'].apply(lambda x: x.astype(bool).sum())
         genes['n_reversal_sites_deltran'] = hp_merged.groupby(summary_series)['n_reversal_deltran'].apply(lambda x: x.astype(bool).sum())
-        genes['n_homoplasic_sites_acctran'] = hp_merged.groupby(summary_series)['n_homoplasic_acctran'].apply(lambda x: x.astype(bool).sum())
-        genes['n_homoplasic_sites_deltran'] = hp_merged.groupby(summary_series)['n_homoplasic_deltran'].apply(lambda x: x.astype(bool).sum())
+        #  genes['n_homoplasic_sites_acctran'] = hp_merged.groupby(summary_series)['n_homoplasic_acctran'].apply(lambda x: x.astype(bool).sum())
+        #  genes['n_homoplasic_sites_deltran'] = hp_merged.groupby(summary_series)['n_homoplasic_deltran'].apply(lambda x: x.astype(bool).sum())
         ##
         #
         #  genes['n_h_acctran/n_t'] = genes['n_homoplasic_acctran']/genes['n_total']
         #  genes['n_h_deltran/n_t'] = genes['n_homoplasic_deltran']/genes['n_total']
         #
-        assert(all(genes.n_homoplasic_sites_acctran == genes.n_homoplasic_sites_deltran))
-        genes['n_hp_sites/n_sites'] = genes['n_homoplasic_sites_acctran']/genes['n_sites']
+        genes['n_homoplasic_sites'] = hp_merged.groupby(summary_series)['n_homoplasic_acctran'].apply(lambda x: x.astype(bool).sum())
+        assert(all(
+            genes['n_homoplasic_sites'] ==
+            hp_merged.groupby(summary_series)['n_homoplasic_deltran'].apply(lambda x: x.astype(bool).sum())
+        ))
+        #
+        genes['n_hp_sites/n_sites'] = genes['n_homoplasic_sites']/genes['n_sites']
 
         # Write out summary
         #
