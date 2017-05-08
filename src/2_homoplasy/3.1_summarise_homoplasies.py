@@ -252,9 +252,9 @@ if __name__ == "__main__":
 
         hps = {}
         for t in transformations:
-            print(t)
+            print('Processing: {}, {}'.format(t, prefix))
             df = dfs[t].loc[prefix]
-            print('{}: {} features (changes) in .tab file.'.format(prefix, len(df)))
+            print('{}: {} changes in .tab file.'.format(prefix, len(df)))
             hp = get_homoplasies(df, keep_all_sites=True)
             print('{}: {} sites in .tab file.'.format(prefix, len(hp)))
             print('{}: {} homoplasic sites in .tab file.'.format(prefix, len(hp.query('n_convergence > 0 | n_reversal > 0'))))
@@ -288,6 +288,10 @@ if __name__ == "__main__":
             & (hp_merged['n_reversal_acctran'] == hp_merged['n_reversal_deltran']) 
             #  & (hp_merged['n_both_acctran'] == hp_merged['n_both_deltran'])
         )
+        print('Homoplasic sites with acctran/deltran reconstruction agreement: {}/{}'.format(
+            sum(hp_merged.query('n_homoplasic_acctran > 0 | n_homoplasic_deltran > 0')['agree_acctran_deltran']),
+            len(hp_merged.query('n_homoplasic_acctran > 0 | n_homoplasic_deltran > 0'))
+        ))
 
         # Annotate sites
         hp_merged = annotate_homoplasies(hp_merged, embl_files[prefix])
@@ -295,15 +299,15 @@ if __name__ == "__main__":
 
         #  Write out homoplasies
         outfile = os.path.join(out_file_prefixes[prefix], prefix + "_homoplasies.csv")
-        hp_merged[hp_merged['gene'].astype(bool)].sort_values(['n_convergence_acctran', 'n_convergence_deltran'], ascending=False).to_csv(outfile)
+        hp_merged[hp_merged['gene'].astype(bool)].sort_values(['n_homoplasic_acctran', 'n_homoplasic_deltran'], ascending=False).to_csv(outfile)
 
-        def nested_lists_to_tuples(ll):
-            '''Convert nested lists to nested tuples to allow hashing
-            '''
-            if type(ll) == list:
-                return(tuple(nested_lists_to_tuples(l) for l in ll))
-            else:
-                return(ll)
+        #  def nested_lists_to_tuples(ll):
+            #  '''Convert nested lists to nested tuples to allow hashing
+            #  '''
+            #  if type(ll) == list:
+                #  return(tuple(nested_lists_to_tuples(l) for l in ll))
+            #  else:
+                #  return(ll)
 
         def get_ordered_unique_values(x):
             '''Return unique values in an iterable of hashable elements, retaining order
@@ -329,20 +333,33 @@ if __name__ == "__main__":
         genes['agree_acctran_deltran'] = hp_merged.groupby(summary_series).apply(lambda x: collections.Counter(x['agree_acctran_deltran']))
         genes['agree_prop_acctran_deltran'] = genes['agree_acctran_deltran'].apply(lambda x: x[True]/(x[True]+x[False]))
         #
-        genes['n_convergence_acctran'] = hp_merged.groupby(summary_series)['n_convergence_acctran'].apply(sum)
-        genes['n_convergence_deltran'] = hp_merged.groupby(summary_series)['n_convergence_deltran'].apply(sum)
-        genes['n_reversal_acctran'] = hp_merged.groupby(summary_series)['n_reversal_acctran'].apply(sum)
-        genes['n_reversal_deltran'] = hp_merged.groupby(summary_series)['n_reversal_deltran'].apply(sum)
+        #  genes['n_convergence_acctran'] = hp_merged.groupby(summary_series)['n_convergence_acctran'].apply(sum)
+        #  genes['n_convergence_deltran'] = hp_merged.groupby(summary_series)['n_convergence_deltran'].apply(sum)
+        #  genes['n_reversal_acctran'] = hp_merged.groupby(summary_series)['n_reversal_acctran'].apply(sum)
+        #  genes['n_reversal_deltran'] = hp_merged.groupby(summary_series)['n_reversal_deltran'].apply(sum)
         #  genes['n_both_acctran'] = hp_merged.groupby(summary_series)['n_both_acctran'].apply(sum)
         #  genes['n_both_deltran'] = hp_merged.groupby(summary_series)['n_both_deltran'].apply(sum)
-        genes['n_homoplasic_acctran'] = hp_merged.groupby(summary_series)['n_homoplasic_acctran'].apply(sum)
-        genes['n_homoplasic_deltran'] = hp_merged.groupby(summary_series)['n_homoplasic_deltran'].apply(sum)
+        #  genes['n_homoplasic_acctran'] = hp_merged.groupby(summary_series)['n_homoplasic_acctran'].apply(sum)
+        #  genes['n_homoplasic_deltran'] = hp_merged.groupby(summary_series)['n_homoplasic_deltran'].apply(sum)
         # n_total is number of changes at a site (summed for all sites in the gene), giving number of changes in a gene
         #  i.e. assert(all(hp[hp['n_convergence'] + hp['n_reversal'] - hp['n_both'] + hp['n_non_homoplasic'] == hp['n_total']]))
-        genes['n_total'] = hp_merged.groupby(summary_series)['n_total_acctran'].apply(sum)
+        #  genes['n_total'] = hp_merged.groupby(summary_series)['n_total_acctran'].apply(sum)
         #
-        genes['n_h_acctran/n_t'] = genes['n_homoplasic_acctran']/genes['n_total']
-        genes['n_h_deltran/n_t'] = genes['n_homoplasic_deltran']/genes['n_total']
+        # Get number of sites with homoplasies in a gene
+        #
+        genes['n_convergence_sites_acctran'] = hp_merged.groupby(summary_series)['n_convergence_acctran'].apply(lambda x: x.astype(bool).sum())
+        genes['n_convergence_sites_deltran'] = hp_merged.groupby(summary_series)['n_convergence_deltran'].apply(lambda x: x.astype(bool).sum())
+        genes['n_reversal_sites_acctran'] = hp_merged.groupby(summary_series)['n_reversal_acctran'].apply(lambda x: x.astype(bool).sum())
+        genes['n_reversal_sites_deltran'] = hp_merged.groupby(summary_series)['n_reversal_deltran'].apply(lambda x: x.astype(bool).sum())
+        genes['n_homoplasic_sites_acctran'] = hp_merged.groupby(summary_series)['n_homoplasic_acctran'].apply(lambda x: x.astype(bool).sum())
+        genes['n_homoplasic_sites_deltran'] = hp_merged.groupby(summary_series)['n_homoplasic_deltran'].apply(lambda x: x.astype(bool).sum())
+        ##
+        #
+        #  genes['n_h_acctran/n_t'] = genes['n_homoplasic_acctran']/genes['n_total']
+        #  genes['n_h_deltran/n_t'] = genes['n_homoplasic_deltran']/genes['n_total']
+        #
+        assert(all(genes.n_homoplasic_sites_acctran == genes.n_homoplasic_sites_deltran))
+        genes['n_hp_sites/n_sites'] = genes['n_homoplasic_sites_acctran']/genes['n_sites']
 
         # Write out summary
         #
@@ -352,7 +369,8 @@ if __name__ == "__main__":
         #  grouping of locations in features (genes): tuple of tuple of tuples, a single feature contains multiple locations
         genes.index.name = 'feature'
         outfile = os.path.join(out_file_prefixes[prefix], prefix + "_homoplasies_per_gene.csv")
-        genes.sort_values(['n_h_acctran/n_t', 'n_h_deltran/n_t'], ascending=False).to_csv(outfile)
+        #  genes.sort_values(['n_h_acctran/n_t', 'n_h_deltran/n_t'], ascending=False).to_csv(outfile)
+        genes.sort_values(['n_hp_sites/n_sites', 'n_sites'], ascending=False).to_csv(outfile)
 
         #  It is not the case that all sites with a gene annotation are not tagged Intergenic,
         #  as the 'Intergenic' tag is given if the SNP strand does not match the gene strand
