@@ -63,3 +63,5 @@ bsub \
     -e "$outdir/jobid_%J.bsub_e.log" \
         "mafft --auto --thread 4 $refs_fa > $outdir/refs_msa.fa"
 
+# TODO consider iterative refinement?
+
