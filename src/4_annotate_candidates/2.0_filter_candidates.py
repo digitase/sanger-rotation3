@@ -58,9 +58,9 @@ if __name__ == "__main__":
     summary_genic_filtered = summary_genic[~summary_genic['known_amr_loci'].astype(bool)]
     summary_intergenic_filtered = summary_intergenic[~summary_intergenic['known_amr_loci'].astype(bool)]
 
-    summary_sites_by_gene_filtered.to_csv('/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/4_verify_candidates/hp_sites_summary.filtered.csv')
-    summary_genic_filtered.to_csv('/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/4_verify_candidates/hp_homologs_summary_genic.filtered.csv')
-    summary_intergenic_filtered.to_csv('/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/4_verify_candidates/hp_homologs_summary_intergenic.filtered.csv')
+    summary_sites_by_gene_filtered.to_csv('.output/hp_sites_summary.filtered.csv')
+    summary_genic_filtered.to_csv('.output/hp_homologs_summary_genic.filtered.csv')
+    summary_intergenic_filtered.to_csv('.output/hp_homologs_summary_intergenic.filtered.csv')
 
     # Output non-annotated locus tags i.e. no gene name OR putative or hypothetical in products
     def add_unannotated_locus_tags(gss, pss, lss, existing_results=None):
@@ -94,6 +94,6 @@ if __name__ == "__main__":
         locus_tags_unannotated
     )
 
-    with open('/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/4_verify_candidates/locus_tags_unannotated.txt', 'w') as outfile:
+    with open('.output/locus_tags_unannotated.txt', 'w') as outfile:
         outfile.write('\n'.join(locus_tags_unannotated))
 

@@ -13,7 +13,7 @@ mkdir -p "$outdir"
 
 # Extract peptide seqs of unannotated loci
 #
-unannotated_loci="/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/4_verify_candidates/locus_tags_unannotated.txt"
+unannotated_loci=".output/locus_tags_unannotated.txt"
 # Split locus tag from rest of header line
 # stop_symbol - Single character string, what to use for terminators. This defaults to the asterisk, "*".
 cat "/lustre/scratch118/infgen/team81/bb9/3_find_candidates/blast/fasta/"st*.cds.pep.fasta | \

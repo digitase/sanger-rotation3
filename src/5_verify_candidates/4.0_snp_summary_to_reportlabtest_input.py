@@ -38,7 +38,7 @@ embl_files = {
     "st8": "/nfs/users/nfs_b/bb9/workspace/rotation3/data/st8/CC8_USA300_FPR3757.embl",
 }
 #  out_tab_template = "/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/4_verify_candidates/plots/{prefix}/{prefix}.locus_tag_{locus_tag}.tab"
-out_pdf_template = "/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/4_verify_candidates/plots_homologs/{prefix}/{prefix}.locus_tag_{locus_tag}.pdf"
+out_pdf_template = ".output/plots_homologs/{prefix}/{prefix}.locus_tag_{locus_tag}.pdf"
 # Dir to store intermediate files in
 tmp_dir = '/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/tmp/'
 
