@@ -4,6 +4,7 @@
 import pandas as pd
 from fuzzywuzzy import fuzz
 from fuzzywuzzy import process
+from collections import Counter
 
 def flatten_list_or_tuple(xs):
     if isinstance(xs, (list, tuple)):
@@ -31,10 +32,18 @@ if __name__ == "__main__":
 
     summary_sites = pd.read_csv('/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/3_find_candidates/hp_sites_summary.csv', converters={'gene': eval, 'locus_tag': eval, 'product': eval})
     summary_sites['known_amr_loci'] = list(tag_known_loci(summary_sites['gene'], known_amr_loci))
+
+    def get_synonymous_from_changes(counter):
+        '''Converts Counter({('G->A', 'Synonymous', 'reverse'): 2, ('A->G', 'Synonymous', 'reverse'): 1}) to Counter({'Synonymous': 3})
+        '''
+        return Counter(x[1] for x in counter.elements())
+
     summary_sites_by_gene = pd.DataFrame().assign(
         sts=summary_sites.groupby('loc_in_alignment').apply(lambda x: tuple(x['level_0'])),
         loc_in_st=summary_sites.groupby('loc_in_alignment').apply(lambda x: tuple(x['loc'])),
         n_sts=summary_sites.groupby('loc_in_alignment').apply(len),
+        synonymous_acctran=summary_sites.groupby('loc_in_alignment').apply(lambda x: sum((get_synonymous_from_changes(eval(c)) for c in x['change_acctran']), Counter())),
+        synonymous_deltran=summary_sites.groupby('loc_in_alignment').apply(lambda x: sum((get_synonymous_from_changes(eval(c)) for c in x['change_deltran']), Counter())),
         n_homoplasic_acctran=summary_sites.groupby('loc_in_alignment').apply(lambda x: tuple(x['n_homoplasic_acctran'])),
         n_homoplasic_deltran=summary_sites.groupby('loc_in_alignment').apply(lambda x: tuple(x['n_homoplasic_deltran'])),
         n_total=summary_sites.groupby('loc_in_alignment').apply(lambda x: tuple(x['n_total_acctran'])),

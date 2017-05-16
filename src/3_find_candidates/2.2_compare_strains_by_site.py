@@ -64,3 +64,5 @@ print('Writing output...')
 dupe_sites = hps_merged[hps_merged.duplicated('loc_in_alignment', keep=False)].sort_values(['loc_in_alignment', 'level_1'])
 dupe_sites.to_csv('/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/3_find_candidates/hp_sites_summary.csv')
 
+# TODO automatic grouping of sites into loci by adjacent identical locus tags?
+
