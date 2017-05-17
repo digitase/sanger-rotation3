@@ -8,6 +8,29 @@ summary_sites_by_gene_filtered = pd.read_csv('.output/hp_sites_summary.filtered.
 summary_genic_filtered = pd.read_csv('.output/hp_homologs_summary_genic.filtered.csv', converters={'gene': eval, 'homologs': eval, 'product': eval})
 summary_intergenic_filtered = pd.read_csv('.output/hp_homologs_summary_intergenic.filtered.csv', converters={'gene': eval, 'homologs': eval, 'product': eval})
 
+def flatten_list_or_tuple(xs):
+    if isinstance(xs, (list, tuple)):
+        for x in xs:
+            yield from flatten_list_or_tuple(x)
+    else:
+        yield xs
+
+# Grouping of sites into loci by adjacent identical locus tags
+tags_list = summary_sites_by_gene_filtered['locus_tags'].map(lambda x: set(flatten_list_or_tuple(x)))
+group_n = 0
+grouping = []
+for i, tags in enumerate(tags_list):
+    if i == 0:
+        pass
+    else:
+        if tags_list[i] & tags_list[i-1]:
+            pass
+        else:
+            group_n += 1
+    grouping.append(group_n)
+#
+summary_sites_by_gene_filtered['locus_group'] = grouping
+
 # Read in iprscan results
 iprscan = pd.read_table('.output/interproscan/interproscan_out.tsv', header=None)
 iprscan.columns = ['prot_acc', 'seq_md5', 'seq_len', 'analysis', 'sig_acc', 'sig_desc', 'start_loc', 'stop_loc', 'score', 'status', 'date', 'ipr_annot_acc', 'ipr_annot_desc', 'go_annot', 'path_annot']
@@ -56,6 +79,4 @@ summary_intergenic_filtered['annot_blast'] = summary_intergenic_filtered['homolo
 summary_sites_by_gene_filtered.to_csv('.output/hp_sites_summary.filtered.annotated.csv')
 summary_genic_filtered.to_csv('.output/hp_homologs_summary_genic.filtered.annotated.csv')
 summary_intergenic_filtered.to_csv('.output/hp_homologs_summary_intergenic.filtered.annotated.csv')
-
-# TODO automatic grouping of sites into loci by adjacent identical locus tags?
 
