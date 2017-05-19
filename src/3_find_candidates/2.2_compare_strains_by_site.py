@@ -42,7 +42,7 @@ print('Mapping st loc to alignment loc...')
     #  pos_to_alignment_pos[short_prefix] = dict(zip(snp.iloc[:, 1], snp.iloc[:, 0]))
     #  hp['loc_in_alignment'] = hp['loc'].apply(lambda loc: pos_to_alignment_pos[short_prefix][loc])
 # Read in mapping
-with open('.output/pos_to_pos_aln.pk', 'rb') as pk_file:
+with open('.output/pos_to_pos_aln.mauveAligner.pk', 'rb') as pk_file:
     pos_to_alignment_pos = pickle.load(pk_file)
 # Rename seq ids to short_prefixes
 ids = list(pos_to_alignment_pos.keys())
