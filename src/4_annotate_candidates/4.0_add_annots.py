@@ -1,5 +1,5 @@
-
-'''Parse annotation results and add annotations to unannotated candidates'''
+'''Parse annotation results and add annotations to unannotated candidates
+'''
 
 import pandas as pd
 import collections
@@ -79,4 +79,34 @@ summary_intergenic_filtered['annot_blast'] = summary_intergenic_filtered['homolo
 summary_sites_by_gene_filtered.to_csv('.output/hp_sites_summary.filtered.annotated.csv')
 summary_genic_filtered.to_csv('.output/hp_homologs_summary_genic.filtered.annotated.csv')
 summary_intergenic_filtered.to_csv('.output/hp_homologs_summary_intergenic.filtered.annotated.csv')
+
+#
+# Summarise summary_sites_by_gene_filtered further, grouping by locus
+#
+# Add codes for SNPs within loci indicating SNP context and type of change
+
+def get_sites_loc_codes(locs):
+    locs = list(flatten_list_or_tuple([eval(eval(l)[0]) for l in locs]))
+    codes = 'uwd'
+    if not any(l < 0 for l in locs): codes = codes.replace('u', '')
+    if not any(l == 0 for l in locs): codes = codes.replace('w', '')
+    if not any(l > 0 for l in locs): codes = codes.replace('d', '')
+    return(codes)
+
+def get_sites_type_codes(type_counters):
+    types = set(sum((collections.Counter(eval(counter_str[8:-1])) for counter_str in type_counters), collections.Counter()).keys())
+    codes = 'nsi'
+    if not 'Nonsynonymous' in types: codes = codes.replace('n', '')
+    if not 'Synonymous' in types: codes = codes.replace('s', '')
+    if not 'Intergenic' in types: codes = codes.replace('i', '')
+    return(codes)
+
+summary_sites_by_gene_filtered_by_locus = summary_sites_by_gene_filtered.groupby('locus_group').apply(lambda x: x.loc[:, ('genes', 'products', 'annot_iprscan', 'annot_blastp')].head(1))
+summary_sites_by_gene_filtered_by_locus = summary_sites_by_gene_filtered_by_locus.assign(
+    n_hp_sites_in_locus=summary_sites_by_gene_filtered.groupby('locus_group').apply(len).values,
+    site_contexts=summary_sites_by_gene_filtered.groupby('locus_group').apply(lambda x: get_sites_loc_codes(x['intergenic'])).values,
+    snp_types=summary_sites_by_gene_filtered.groupby('locus_group').apply(lambda x: get_sites_type_codes(x['synonymous_acctran'])).values
+)
+
+summary_sites_by_gene_filtered_by_locus.to_csv('.output/hp_sites_by_locus_summary.filtered.annotated.csv')
 
