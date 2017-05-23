@@ -1,0 +1,909 @@
+FT   misc_feature    12499..12732
+FT                   /note="SAUSA300s001	T-box riboswitch"
+FT   misc_feature    14274..14425
+FT                   /note="SAUSA300s172	Sau-6817"
+FT                   /note="PMID: 20151104"
+FT   misc_feature    15955..16054
+FT                   /note="SAUSA300s002	SAM riboswitch"
+FT   misc_feature    33880..34187
+FT                   /note="SAUSA300s207	JKD6008sRNA006"
+FT                   /note="PMID:  23733475"
+FT   misc_feature    36385..36501
+FT                   /note="SAUSA300s244	JKD6008sRNA304"
+FT                   /note="PMID: 23733475"
+FT   misc_feature    complement(36385..36502)
+FT                   /note="SAUSA300s243	JKD6008sRNA298"
+FT                   /note="SAUSA300s243	JKD6008sRNA304"
+FT                   /note="PMID:23733475"
+FT   misc_feature    37840..38304
+FT                   /note="SAUSA300s203	RsaX01"
+FT                   /note="PMID:19786493"
+FT   misc_feature    68579..68754
+FT                   /note="SAUSA300s185 Sau-6372"
+FT                   /note="PMID:20151104"
+FT   misc_feature    85361..88191
+FT                   /note="SAUSA300s155	Teg15as"
+FT                   /note="PMID:20505759"
+FT                   /note="SAUSA300s155	JKD6008sRNA014"
+FT                   /note="PMID:23733475"
+FT   misc_feature    92906..93187
+FT                   /note="SAUSA300s156	Teg16as"
+FT                   /note="PMID:20505759"
+FT                   /note="SAUSA300s156	JKD6008sRNA015"
+FT                   /note="PMID:23733475"
+FT   misc_feature    93261..93376
+FT                   /note="SAUSA300s270	tsr6"
+FT                   /note="PMID:26861020"
+FT   misc_feature    135849..136926
+FT                   /note="SAUSA300s192	Sau-6527"
+FT                   /note="PMID:20151104"
+FT   misc_feature    155337..155445
+FT                   /note="SAUSA300s157	Teg17as"
+FT                   /note="PMID:20505759"
+FT                   /note="SAUSA300s157	JKD6008sRNA021"
+FT                   /note="PMID:23733475"
+FT   misc_feature    183632..183848
+FT                   /note="SAUSA300s064	Sau-53"
+FT                   /note="PMID:20151104"
+FT   misc_feature    complement(191626..191835)
+FT                   /note="SAUSA300s056	RsaK"
+FT                   /note="PMID:19786493"
+FT   misc_feature    196598..196649
+FT                   /note="SAUSA300s273	tsr9"
+FT                   /note="PMID:26861020"
+FT   misc_feature    complement(203619..203809)
+FT                   /note="SAUSA300s086	Teg39"
+FT                   /note="PMID:20505759"
+FT   misc_feature    210162..212088
+FT                   /note="SAUSA300s186	Sau-6402"
+FT                   /note="PMID:20151104"
+FT   misc_feature    225178..225372
+FT                   /note="SAUSA300s053	RsaG"
+FT                   /note="19786493"
+FT   misc_feature    237137..237438
+FT                   /note="SAUSA300s117	ssr8"
+FT                   /note="PMID:16980476"
+FT   misc_feature    241340..245971
+FT                   /note="SAUSA300s189	Sau-6454"
+FT                   /note="PMID:20151104"
+FT   misc_feature    252476..252614
+FT                   /note="SAUSA300s171	Sau-6569"
+FT                   /note="PMID:20151104"
+FT   misc_feature    255532..255672
+FT                   /note="SAUSA300s208	JKD6008sRNA037"
+FT                   /note="PMID:23733475"
+FT   misc_feature    262693..263881
+FT                   /note="SAUSA300s199	Sau-6931"
+FT                   /note="PMID:20151104"
+FT   misc_feature    complement(323529..323623)
+FT                   /note="SAUSA300s275	tsr11"
+FT                   /note="PMID:26861020"
+FT   misc_feature    complement(335727..336592)
+FT                   /note="SAUSA300s158	Teg18as"
+FT                   /note="PMID:20505759"
+FT                   /note="SAUSA300s158	JKD6008sRNA053"
+FT                   /note="PMID:23733475"
+FT   misc_feature    337601..338736
+FT                   /note="SAUSA300s194	Sau-6733"
+FT                   /note="PMID:20151104"
+FT   misc_feature    373907..381052
+FT                   /note="SAUSA300s176	Sau-26"
+FT                   /note="PMID:20151104"
+FT   misc_feature    complement(381099..381202)
+FT                   /note="SAUSA300s041	rsaOB"
+FT                   /note="19237465"
+FT   misc_feature    complement(381202..381462)
+FT                   /note="SAUSA300s003	T-box riboswitch"
+FT   misc_feature    384724..384830
+FT                   /note="SAUSA300s165	Teg38as"
+FT                   /note="PMID:20505759"
+FT                   /note="SAUSA300s165	JKD6008sRNA063"
+FT                   /note="PMID:23733475"
+FT   misc_feature    386720..386816
+FT                   /note="SAUSA300s071	Sau-5971"
+FT                   /note="PMID:20151104"
+FT   misc_feature    391958..392048
+FT                   /note="SAUSA300s210	JKD6008sRNA071"
+FT                   /note="PMID:23733475"
+FT   misc_feature    400826..400986
+FT                   /note="SAUSA300s211	JKD6008sRNA073"
+FT                   /note="PMID:23733475"
+FT   misc_feature    404495..404599
+FT                   /note="SAUSA300s004	Purine riboswitch"
+FT                   /note="SAUSA300s004	ssr45"
+FT                   /note="PMID:16980476"
+FT   misc_feature    427477..428598
+FT                   /note="SAUSA300s182	Sau-6079"
+FT                   /note="PMID:20151104"
+FT   misc_feature    438882..439087
+FT                   /note="SAUSA300s087	Teg41"
+FT                   /note="PMID:20505759"
+FT                   /note="SAUSA300s087	RsaX05"
+FT                   /note="PMID:19786493"
+FT                   /note="SAUSA300s087	JKD6008sRNA095"
+FT                   /note="PMID:23733475"
+FT   misc_feature    441943..444418
+FT                   /note="SAUSA300s159	Teg19as"
+FT                   /note="PMID:20505759"
+FT                   /note="SAUSA300s159	JKD6008sRNA096"
+FT                   /note="PMID:23733475"
+FT   misc_feature    446483..446567
+FT                   /note="SAUSA300s277	tsr13"
+FT                   /note="PMID:26861020"
+FT   misc_feature    454210..454352
+FT                   /note="SAUSA300s201	Sau-6054"
+FT                   /note="PMID:20151104"
+FT   misc_feature    469700..469987
+FT                   /note="SAUSA300s005	ffs"
+FT   misc_feature    480072..480110
+FT                   /note="SAUSA300s215	JKD6008sRNA103"
+FT                   /note="PMID:23733475"
+FT   misc_feature    529403..529532
+FT                   /note="SAUSA300s216	JKD6008sRNA118"
+FT                   /note="PMID:23733475"
+FT   misc_feature    529501..529547
+FT                   /note="SAUSA300s088	Teg43"
+FT                   /note="PMID:20505759"
+FT                   /note="SAUSA300s088	JKD6008sRNA102"
+FT                   /note="PMID:23733475"
+FT   misc_feature    529503..529537
+FT                   /note="SAUSA300s215	JKD6008sRNA103"
+FT                   /note="PMID:23733475"
+FT   misc_feature    542718..543960
+FT                   /note="SAUSA300s217	JKD6008sRNA119"
+FT                   /note="PMID:23733475"
+FT   misc_feature    544028..544318
+FT                   /note="SAUSA300s146	Teg45"
+FT                   /note="PMID:20505759"
+FT                   /note="SAUSA300s146	JKD6008sRNA120"
+FT                   /note="PMID:23733475"
+FT   misc_feature    551394..551503
+FT                   /note="SAUSA300s132	ssr87"
+FT                   /note="PMID:16980476"
+FT   misc_feature    553326..553446
+FT                   /note="SAUSA300s142	ssr155"
+FT                   /note="PMID:21039920"
+FT                   /note="SAUSA300s142	Sau-60"
+FT                   /note="PMID:20151104"
+FT   misc_feature    557132..557225
+FT                   /note="SAUSA300s125	ssr47"
+FT                   /note="PMID:16980476"
+FT   misc_feature    562232..563992
+FT                   /note="SAUSA300s218	JKD6008sRNA127"
+FT                   /note="PMID:23733475"
+FT   misc_feature    complement(600836..601085)
+FT                   /note="SAUSA300s074	rsaOI"
+FT                   /note="PMID:20511587"
+FT                   /note="SAUSA300s074	ssr156"
+FT                   /note="PMID:21039920"
+FT                   /note="SAUSA300s074	Sau-6477"
+FT                   /note="PMID:20151104"
+FT   misc_feature    604379..604772
+FT                   /note="SAUSA300s140	ssr128"
+FT                   /note="PMID:21347352"
+FT   misc_feature    604745..605170
+FT                   /note="SAUSA300s193	Sau-6667"
+FT                   /note="PMID:20151104"
+FT   misc_feature    611026..611166
+FT                   /note="SAUSA300s047	RsaA"
+FT                   /note="PMID:19786493"
+FT   misc_feature    611188..611309
+FT                   /note="SAUSA300s168	Sau-76"
+FT                   /note="PMID:20151104"
+FT   misc_feature    complement(640869..640996)
+FT                   /note="SAUSA300s150	Teg48"
+FT                   /note="PMID:20505759"
+FT   misc_feature    complement(641017..641233)
+FT                   /note="SAUSA300s089	Teg49"
+FT                   /note="PMID:20505759"
+FT                   /note="SAUSA300s089	JKD6008sRNA134"
+FT                   /note="PMID:23733475"
+FT   misc_feature    complement(652538..653043)
+FT                   /note="SAUSA300s049	RsaC"
+FT                   /note="PMID:19786493"
+FT                   /note="SAUSA300s049	ssr72"
+FT                   /note="SAUSA300s049	ssr103"
+FT                   /note="PMID:16980476"
+FT   misc_feature    complement(653100..653391)
+FT                   /note="SAUSA300s113	sbrC"
+FT                   /note="PMID:20978742"
+FT   misc_feature    657577..658242
+FT                   /note="SAUSA300s198	Sau-6912"
+FT                   /note="PMID:20151104"
+FT   misc_feature    668365..668542
+FT                   /note="SAUSA300s050	RsaD"
+FT                   /note="PMID:19786493"
+FT   misc_feature    675629..675888
+FT                   /note="SAUSA300s219	JKD6008sRNA139"
+FT                   /note="PMID:23733475"
+FT   misc_feature    685430..685851
+FT                   /note="SAUSA300s220	JKD6008sRNA140  "
+FT                   /note="PMID:23733475"
+FT   misc_feature    687825..688925
+FT                   /note="SAUSA300s160	Teg20as"
+FT                   /note="PMID:20505759"
+FT                   /note="SAUSA300s160	JKD6008sRNA141"
+FT                   /note="PMID:23733475"
+FT   misc_feature    733938..734108
+FT                   /note="SAUSA300s042	rsaOC"
+FT                   /note="PMID:19237465"
+FT                   /note="SAUSA300s042	RsaX08"
+FT                   /note="PMID:19786493"
+FT   misc_feature    736684..736761
+FT                   /note="SAUSA300s067	Sau-66"
+FT                   /note="PMID:20151104"
+FT   misc_feature    749769..749834
+FT                   /note="SAUSA300s221	JKD6008sRNA150"
+FT                   /note="PMID:23733475"
+FT   misc_feature    751071..751135
+FT                   /note="SAUSA300s222	JKD6008sRNA151"
+FT                   /note="PMID:23733475"
+FT   misc_feature    754789..755145
+FT                   /note="SAUSA300s145	Teg51"
+FT                   /note="PMID:20505759"
+FT                   /note="SAUSA300s145	JKD6008sRNA152"
+FT                   /note="PMID:23733475"
+FT   misc_feature    complement(763048..763642)
+FT                   /note="SAUSA300s224	JKD6008sRNA154"
+FT                   /note="PMID:23733475"
+FT   misc_feature    795523..795715
+FT                   /note="SAUSA300s278	tsr14"
+FT                   /note="PMID:26861020"
+FT   misc_feature    complement(802016..802919)
+FT                   /note="SAUSA300s173	Sau-15"
+FT                   /note="PMID:20151104"
+FT   misc_feature    803058..803182
+FT                   /note="SAUSA300s054	RsaH"
+FT                   /note="PMID:19786493"
+FT                   /note="SAUSA300s054	Sau-6059"
+FT                   /note="PMID:20151104"
+FT   misc_feature    812226..812334
+FT                   /note="SAUSA300s127	ssr54"
+FT                   /note="PMID:16980476"
+FT   misc_feature    817130..817489
+FT                   /note="SAUSA300s006	ssrA"
+FT                   /note="SAUSA300s006	ssr109"
+FT                   /note="PMID:16980476"
+FT   misc_feature    831513..831603
+FT                   /note="SAUSA300s075	rsaOL"
+FT                   /note="PMID:20511587"
+FT                   /note="SAUSA300s075	Sau-07"
+FT                   /note="PMID:20151104"
+FT   misc_feature    832736..833164
+FT                   /note="SAUSA300s197	Sau-6769"
+FT                   /note="PMID:20151104"
+FT   misc_feature    833423..833714
+FT                   /note="SAUSA300s225	JKD6008sRNA169"
+FT                   /note="PMID:23733475"
+FT   misc_feature    833925..834224
+FT                   /note="SAUSA300s166	Teg40as"
+FT                   /note="PMID:20505759"
+FT                   /note="SAUSA300s166	JKD6008sRNA170"
+FT                   /note="PMID:23733475"
+FT   misc_feature    833927..834577
+FT                   /note="SAUSA300s200	Sau-81"
+FT                   /note="PMID:20151104"
+FT   misc_feature    842675..842809
+FT                   /note="SAUSA300s007	SAM riboswitch"
+FT   misc_feature    846180..846996
+FT                   /note="SAUSA300s279	tsr15"
+FT                   /note="PMID:26861020"
+FT   misc_feature    847059..847370
+FT                   /note="SAUSA300s128	ssr63"
+FT                   /note="PMID:16980476"
+FT   misc_feature    complement(861037..861156)
+FT                   /note="SAUSA300s280	tsr16"
+FT                   /note="PMID:26861020"
+FT   misc_feature    923224..923636
+FT                   /note="SAUSA300s281	tsr17"
+FT                   /note="PMID:26861020"
+FT   misc_feature    complement(935341..935599)
+FT                   /note="SAUSA300s205	RsaX11"
+FT                   /note="PMID:19786493"
+FT   misc_feature    942771..942932
+FT                   /note="SAUSA300s051	RsaE"
+FT                   /note="PMID:19786493"
+FT   misc_feature    942932..942983
+FT                   /note="SAUSA300s052	RsaF"
+FT                   /note="PMID:19786493"
+FT   misc_feature    954522..955344
+FT                   /note="SAUSA300s228	JKD6008sRNA187"
+FT                   /note="PMID:23733475"
+FT   misc_feature    956857..957107
+FT                   /note="SAUSA300s229	JKD6008sRNA188"
+FT                   /note="PMID:23733475"
+FT   misc_feature    963375..963542
+FT                   /note="SAUSA300s072	Sau-6053"
+FT                   /note="PMID:20151104"
+FT   misc_feature    complement(973602..973843)
+FT                   /note="SAUSA300s039	sprG2"
+FT                   /note="PMID:16183745"
+FT                   /note="PMID:24703849"
+FT   misc_feature    complement(973785..973900)
+FT                   /note="SAUSA300s036	sprF4"
+FT                   /note="PMID:16183745"
+FT                   /note="PMID:24703849"
+FT                   /note="SAUSA300s036	JKD6008sRNA191"
+FT                   /note="PMID:23733475"
+FT   misc_feature    973859..974225
+FT                   /note="SAUSA300s144	sprG4"
+FT                   /note="PMID:16183745"
+FT                   /note="PMID:24703849"
+FT   misc_feature    974534..974753
+FT                   /note="SAUSA300s230	JKD6008sRNA192"
+FT                   /note="PMID:23733475"
+FT   misc_feature    981848..982419
+FT                   /note="SAUSA300s196	Sau-6751"
+FT                   /note="PMID:23733475"
+FT   misc_feature    982432..982641
+FT                   /note="SAUSA300s076	rsaOO"
+FT                   /note="PMID:20511587"
+FT   misc_feature    complement(999494..999665)
+FT                   /note="SAUSA300s231	JKD6008sRNA193"
+FT                   /note="PMID:23733475"
+FT   misc_feature    1021895..1022247
+FT                   /note="SAUSA300s232	JKD6008sRNA195"
+FT                   /note="PMID:23733475"
+FT   misc_feature    complement(1025236..1025364)
+FT                   /note="SAUSA300s008	TPP riboswitch"
+FT                   /note="SAUSA300s008	Sau-11"
+FT                   /note="PMID:20151104"
+FT   misc_feature    1025658..1025851
+FT                   /note="SAUSA300s282	tsr18"
+FT                   /note="PMID:26861020"
+FT   misc_feature    1026724..1026852
+FT                   /note="SAUSA300s065	Sau-59"
+FT                   /note="PMID:20151104"
+FT   misc_feature    1031668..1031761
+FT                   /note="SAUSA300s283	tsr19"
+FT                   /note="PMID:26861020"
+FT   misc_feature    1035550..1035800
+FT                   /note="SAUSA300s136	ssr105"
+FT                   /note="PMID:16980476"
+FT   misc_feature    1035788..1035982
+FT                   /note="SAUSA300s133	ssr88"
+FT                   /note="PMID:16980476"
+FT   misc_feature    1058280..1058412
+FT                   /note="SAUSA300s077	rsaOP"
+FT                   /note="PMID:20511587"
+FT   misc_feature    1071510..1072738
+FT                   /note="SAUSA300s191	Sau-6524"
+FT                   /note="PMID:20151104"
+FT   misc_feature    1083145..1083369
+FT                   /note="SAUSA300s009	T-box riboswitch"
+FT   misc_feature    1102625..1102880
+FT                   /note="SAUSA300s090	Teg58"
+FT                   /note="PMID:20505759"
+FT   misc_feature    1108197..1109343
+FT                   /note="SAUSA300s285	tsr21"
+FT                   /note="PMID:26861020"
+FT   misc_feature    complement(1110644..1110964)
+FT                   /note="SAUSA300s233	JKD6008sRNA205"
+FT                   /note="PMID:23733475"
+FT   misc_feature    1110991..1111083
+FT                   /note="SAUSA300s234	JKD6008sRNA206"
+FT                   /note="PMID:23733475"
+FT   misc_feature    1111803..1111873
+FT                   /note="SAUSA300s235	JKD6008sRNA207"
+FT                   /note="PMID:23733475"
+FT   misc_feature    1116962..1118659
+FT                   /note="SAUSA300s183	Sau-6297"
+FT                   /note="PMID:20151104"
+FT   misc_feature    1118714..1119096
+FT                   /note="SAUSA300s286	tsr22"
+FT                   /note="PMID:26861020"
+FT   misc_feature    1119079..1119295
+FT                   /note="SAUSA300s091	Teg60"
+FT                   /note="PMID:20505759"
+FT                   /note="SAUSA300s091	JKD6008sRNA208"
+FT                   /note="PMID:23733475"
+FT   misc_feature    1119303..1120781
+FT                   /note="SAUSA300s129	ssr68"
+FT                   /note="PMID:16980476"
+FT   misc_feature    1140085..1140280
+FT                   /note="SAUSA300s010	T-box riboswitch"
+FT   misc_feature    1157026..1157212
+FT                   /note="SAUSA300s154	Teg103"
+FT                   /note="PMID:20505759"
+FT                   /note="SAUSA300s154	JKD6008sRNA214"
+FT                   /note="PMID:23733475"
+FT   misc_feature    1166261..1166353
+FT                   /note="SAUSA300s167	Sau-46"
+FT                   /note="PMID:20151104"
+FT   misc_feature    1194928..1194999
+FT                   /note="SAUSA300s059	Sau-24"
+FT                   /note="PMID:20151104"
+FT                   /note="SAUSA300s059	ssr9"
+FT                   /note="SAUSA300s059	ssr10"
+FT                   /note="PMID:16980476"
+FT   misc_feature    1234776..1234885
+FT                   /note="SAUSA300s134	ssr95"
+FT                   /note="PMID:16980476"
+FT   misc_feature    1250769..1250839
+FT                   /note="SAUSA300s170	Sau-6041"
+FT                   /note="PMID:20151104"
+FT   misc_feature    1252530..1252657
+FT                   /note="SAUSA300s060	Sau-27"
+FT                   /note="PMID:20151104"
+FT   misc_feature    complement(1252980..1253176)
+FT                   /note="SAUSA300s143	ssr158"
+FT                   /note="PMID:21039920"
+FT   misc_feature    1254081..1254261
+FT                   /note="SAUSA300s288	tsr24"
+FT                   /note="PMID:16980476"
+FT   misc_feature    1279860..1279906
+FT                   /note="SAUSA300s092	Teg105"
+FT                   /note="PMID:20505759"
+FT   misc_feature    1282707..1282804
+FT                   /note="SAUSA300s093	Teg106"
+FT                   /note="PMID:20505759"
+FT   misc_feature    1282919..1283020
+FT                   /note="SAUSA300s094	Teg108"
+FT                   /note="PMID:20505759"
+FT                   /note="SAUSA300s094	JKD6008sRNA222"
+FT                   /note="PMID:23733475"
+FT   misc_feature    1291212..1291370
+FT                   /note="SAUSA300s169	Sau-85"
+FT                   /note="PMID:20151104"
+FT   misc_feature    1294687..1296617
+FT                   /note="SAUSA300s202	Sau-6904"
+FT                   /note="PMID:20151104"
+FT   misc_feature    1313701..1313810
+FT                   /note="SAUSA300s112	sbrB"
+FT                   /note="PMID:20978742"
+FT                   /note="SAUSA300s112	ssr67"
+FT                   /note="PMID:16980476"
+FT   misc_feature    complement(1325570..1325626)
+FT                   /note="SAUSA300s126	ssr51"
+FT                   /note="SAUSA300s126	ssr117"
+FT                   /note="SAUSA300s138	ssr116"
+FT                   /note="PMID:16980476"
+FT                   /note="SAUSA300s138	JKD6008sRNA226"
+FT                   /note="SAUSA300s138	JKD6008sRNA251"
+FT                   /note="PMID:23733475"
+FT   misc_feature    complement(1331610..1331880)
+FT                   /note="SAUSA300s118	ssr16"
+FT                   /note="PMID:16980476"
+FT   misc_feature    1350607..1350802
+FT                   /note="SAUSA300s011	T-box riboswitch"
+FT   misc_feature    1350808..1351013
+FT                   /note="SAUSA300s012	T-box riboswitch"
+FT   misc_feature    1350988..1354049
+FT                   /note="SAUSA300s181	Sau-72"
+FT                   /note="PMID:20151104"
+FT   misc_feature    complement(1362170..1362274)
+FT                   /note="SAUSA300s291	tsr27"
+FT                   /note="PMID:26861020"
+FT   misc_feature    complement(1363361..1363483)
+FT                   /note="SAUSA300s290	tsr26"
+FT                   /note="PMID:26861020"
+FT   misc_feature    complement(1369381..1369544)
+FT                   /note="SAUSA300s259	JKD6008sRNA393"
+FT                   /note="PMID:237733475"
+FT   misc_feature    complement(1375328..1375465)
+FT                   /note="SAUSA300s137	ssr113"
+FT                   /note="PMID:16980476"
+FT   misc_feature    1391625..1391801
+FT                   /note="SAUSA300s013	Lysine riboswitch"
+FT   misc_feature    1417242..1417423
+FT                   /note="SAUSA300s289	tsr25"
+FT                   /note="PMID:26861020"
+FT   misc_feature    1435440..1462153
+FT                   /note="SAUSA300s174	Sau-17"
+FT                   /note="PMID:20151104"
+FT   misc_feature    complement(1476090..1476523)
+FT                   /note="SAUSA300s014	rnpB"
+FT                   /note="SAUSA300s014	ssr79"
+FT                   /note="PMID:16980476"
+FT   misc_feature    complement(1503044..1503192)
+FT                   /note="SAUSA300s063	Sau-50"
+FT                   /note="PMID:20151104"
+FT   misc_feature    1514834..1515015
+FT                   /note="SAUSA300s236	JKD6008sRNA243"
+FT                   /note="PMID:23733475"
+FT   misc_feature    complement(1516089..1516224)
+FT                   /note="SAUSA300s015	FMN riboswitch"
+FT                   /note="SAUSA300s015	ssr22"
+FT                   /note="SAUSA300s015	ssr23"
+FT                   /note="PMID:16980476"
+FT   misc_feature    1580056..1581230
+FT                   /note="SAUSA300s187	Sau-6405"
+FT                   /note="PMID:20151104"
+FT   misc_feature    1584957..1585024
+FT                   /note="SAUSA300s095	Teg116"
+FT                   /note="PMID:20505759"
+FT   misc_feature    1592666..1592802
+FT                   /note="SAUSA300s106	Teg151"
+FT                   /note="PMID:20505759"
+FT   misc_feature    complement(1615871..1616104)
+FT                   /note="SAUSA300s119	ssr24"
+FT                   /note="PMID:16980476"
+FT   misc_feature    1639221..1639373
+FT                   /note="SAUSA300s043	rsaOD"
+FT                   /note="PMID:19237465"
+FT   misc_feature    complement(1679319..1679395)
+FT                   /note="SAUSA300s292	tsr28"
+FT                   /note="PMID:26861020"
+FT   misc_feature    complement(1688209..1688408)
+FT                   /note="SAUSA300s016	T-box riboswitch"
+FT   misc_feature    complement(1699277..1699516)
+FT                   /note="SAUSA300s026	ssrS"
+FT                   /note="PMID:16183745"
+FT                   /note="SAUSA300s026	ssr80"
+FT                   /note="PMID:16980476"
+FT   misc_feature    complement(1702721..1703050)
+FT                   /note="SAUSA300s147	Teg69"
+FT                   /note="PMID:20505759"
+FT                   /note="SAUSA300s147	JKD6008sRNA257"
+FT                   /note="PMID:23733475"
+FT   misc_feature    complement(1719787..1719874)
+FT                   /note="SAUSA300s139	ssr120"
+FT                   /note="PMID:16980476"
+FT   misc_feature    1721397..1721637
+FT                   /note="SAUSA300s238	JKD6008sRNA259"
+FT                   /note="PMID:23733475"
+FT   misc_feature    1722238..1722497
+FT                   /note="SAUSA300s239	JKD6008sRNA260"
+FT                   /note="PMID:23733475"
+FT   misc_feature    complement(1728512..1728877)
+FT                   /note="SAUSA300s120	ssr28"
+FT                   /note="PMID:16980476"
+FT   misc_feature    complement(1743864..1744032)
+FT                   /note="SAUSA300s240	JKD6008sRNA263"
+FT                   /note="PMID:23733475"
+FT   misc_feature    complement(1745665..1745912)
+FT                   /note="SAUSA300s017	Lysine riboswitch"
+FT                   /note="SAUSA300s017	JKD6008sRNA264"
+FT                   /note="PMID:23733475"
+FT   misc_feature    complement(1747974..1748259)
+FT                   /note="SAUSA300s018	T-box riboswitch"
+FT   misc_feature    1765894..1766048
+FT                   /note="SAUSA300s114	sbrE"
+FT                   /note="PMID:20978742"
+FT   misc_feature    1792597..1792818
+FT                   /note="SAUSA300s121	ssr29"
+FT                   /note="PMID:16980476"
+FT   misc_feature    complement(1804275..1804494)
+FT                   /note="SAUSA300s019	T-box riboswitch"
+FT   misc_feature    1808445..1808499
+FT                   /note="SAUSA300s048	RsaB"
+FT                   /note="PMID:19786493"
+FT   misc_feature    complement(1848712..1848912)
+FT                   /note="SAUSA300s044	rsaOE"
+FT                   /note="PMID:19237465"
+FT   misc_feature    complement(1859508..1859674)
+FT                   /note="SAUSA300s020	FMN riboswitch"
+FT                   /note="SAUSA300s020	ssr30"
+FT                   /note="PMID:16980476"
+FT   misc_feature    1874733..1875036
+FT                   /note="SAUSA300s206	RsaX15"
+FT                   /note="PMID:19786493"
+FT   misc_feature    complement(1880031..1880164)
+FT                   /note="SAUSA300s021	SAM riboswitch"
+FT   misc_feature    1895405..1895613
+FT                   /note="SAUSA300s027	sprA1"
+FT                   /note="PMID:16183745"
+FT                   /note="SAUSA300s027	ssr151"
+FT                   /note="PMID:l21039920"
+FT                   /note="SAUSA300s027	JKD6008sRNA305"
+FT                   /note="PMID:23733475"
+FT   misc_feature    1895578..1895636
+FT                   /note="SAUSA300s107	sprA1-AS"
+FT                   /note="PMID:20505759"
+FT   misc_feature    1930235..1932320
+FT                   /note="SAUSA300s190	Sau-6515"
+FT                   /note="PMID:20151104"
+FT   misc_feature    1979548..1979621
+FT                   /note="SAUSA300s045	rsaOF"
+FT                   /note="PMID:19237465"
+FT   misc_feature    1990876..1990922
+FT                   /note="SAUSA300s096	Teg121"
+FT                   /note="PMID:20505759"
+FT   misc_feature    2038388..2038440
+FT                   /note="SAUSA300s097	Teg122"
+FT                   /note="PMID:20505759"
+FT                   /note="SAUSA300s097	JKD6008sRNA303"
+FT                   /note="PMID:23733475"
+FT   misc_feature    2038434..2038667
+FT                   /note="SAUSA300s152	Teg13"
+FT                   /note="PMID:20505759"
+FT                   /note="SAUSA300s152	JKD6008sRNA302"
+FT                   /note="PMID:23733475"
+FT   misc_feature    2044635..2044787
+FT                   /note="SAUSA300s031	sprD"
+FT                   /note="PMID:16183745"
+FT   misc_feature    2044863..2044923
+FT                   /note="SAUSA300s099	Teg124"
+FT                   /note="PMID:20505759"
+FT   misc_feature    complement(2046243..2046409)
+FT                   /note="SAUSA300s032	sprE"
+FT                   /note="PMID:16183745"
+FT                   /note="SAUSA300s032	ssr6"
+FT                   /note="PMID:16980476"
+FT                   /note="SAUSA300s032	JKD6008sRNA292"
+FT                   /note="PMID:23733475"
+FT   misc_feature    complement(2048484..2048626)
+FT                   /note="SAUSA300s033	sprF1"
+FT                   /note="PMID:16183745"
+FT                   /note="PMID:24703849"
+FT                   /note="SAUSA300s033	ssr121"
+FT                   /note="PMID:16980476"
+FT                   /note="SAUSA300s033	JKD6008sRNA310"
+FT                   /note="PMID:23733475"
+FT   misc_feature    2048491..2048800
+FT                   /note="SAUSA300s037	sprG1"
+FT                   /note="PMID:16183745"
+FT                   /note="PMID:24703849"
+FT   misc_feature    2086692..2086804
+FT                   /note="SAUSA300s294	tsr30"
+FT                   /note="PMID:26861020"
+FT   misc_feature    complement(2096825..2097271)
+FT                   /note="SAUSA300s245	JKD6008sRNA316"
+FT                   /note="PMID:23733475"
+FT   misc_feature    complement(2106351..2106905)
+FT                   /note="SAUSA300s022	RNAIII"
+FT                   /note="SAUSA300s022	ssr129"
+FT                   /note="PMID:21347352"
+FT                   /note="SAUSA300s022	JKD6008sRNA317"
+FT                   /note="PMID:23733475"
+FT   misc_feature    2114166..2114249
+FT                   /note="SAUSA300s161	Teg23as"
+FT                   /note="PMID:20505759"
+FT   misc_feature    2125264..2125488
+FT                   /note="SAUSA300s153	Teg16"
+FT                   /note="PMID:20505759"
+FT                   /note="SAUSA300s153	JKD6008sRNA321"
+FT                   /note="PMID:23733475"
+FT   misc_feature    2178081..2178184
+FT                   /note="SAUSA300s023	TPP riboswitch"
+FT   misc_feature    complement(2198690..2198854)
+FT                   /note="SAUSA300s131	ssr82"
+FT                   /note="PMID:16980476"
+FT   misc_feature    complement(2207684..2207883)
+FT                   /note="SAUSA300s246	JKD6008sRNA327"
+FT                   /note="PMID:23733475"
+FT   misc_feature    2209485..2209751
+FT                   /note="SAUSA300s247	JKD6008sRNA328"
+FT                   /note="PMID:23733475"
+FT   misc_feature    2214819..2215164
+FT                   /note="SAUSA300s115	artR"
+FT                   /note="PMID: 23955428"
+FT   misc_feature    2220076..2220219
+FT                   /note="SAUSA300s248	JKD6008sRNA330"
+FT                   /note="PMID:23733475"
+FT   misc_feature    complement(2221832..2222088)
+FT                   /note="SAUSA300s249	JKD6008sRNA331"
+FT                   /note="PMID:23733475"
+FT   misc_feature    2227969..2228134
+FT                   /note="SAUSA300s034	sprF3"
+FT                   /note="PMID:16183745"
+FT                   /note="PMID:24703849"
+FT   misc_feature    complement(2228113..2228293)
+FT                   /note="SAUSA300s038	sprG3"
+FT                   /note="PMID:16183745"
+FT                   /note="PMID:24703849"
+FT   misc_feature    complement(2233616..2233890)
+FT                   /note="SAUSA300s024	GlmS ribozyme"
+FT                   /note="SAUSA300s024	ssr37"
+FT                   /note="PMID:16980476"
+FT   misc_feature    2274843..2276948
+FT                   /note="SAUSA300s175	Sau-23"
+FT                   /note="PMID:20151104"
+FT   misc_feature    2295625..2295776
+FT                   /note="SAUSA300s296	tsr32"
+FT                   /note="PMID:26861020"
+FT   misc_feature    2307347..2307436
+FT                   /note="SAUSA300s083	Teg22"
+FT                   /note="PMID:20505759"
+FT                   /note="SAUSA300s083	JKD6008sRNA344"
+FT                   /note="PMID:23733475"
+FT   misc_feature    complement(2309374..2309517)
+FT                   /note="SAUSA300s130	ssr69"
+FT                   /note="PMID:16980476"
+FT   misc_feature    2312128..2312192
+FT                   /note="SAUSA300s062	Sau-31"
+FT                   /note="PMID:20151104"
+FT   misc_feature    complement(2313163..2313342)
+FT                   /note="SAUSA300s061	Sau-30"
+FT                   /note="PMID:20151104"
+FT                   /note="SAUSA300s061	ssr154"
+FT                   /note="PMID:21039920"
+FT   misc_feature    complement(2327320..2327458)
+FT                   /note="SAUSA300s122	ssr39"
+FT                   /note="PMID:16980476"
+FT   misc_feature    2335770..2336015
+FT                   /note="SAUSA300s123	ssr40"
+FT                   /note="PMID:16980476"
+FT   misc_feature    2341437..2342544
+FT                   /note="SAUSA300s251	JKD6008sRNA348"
+FT                   /note="PMID:23733475"
+FT   misc_feature    2344298..2344357
+FT                   /note="SAUSA300s141	ssr153"
+FT                   /note="PMID:21039920"
+FT   misc_feature    2371163..2372121
+FT                   /note="SAUSA300s164	Teg36as"
+FT                   /note="PMID:20505759"
+FT                   /note="SAUSA300s164	JKD6008sRNA351"
+FT                   /note="PMID:23733475"
+FT   misc_feature    complement(2372163..2372463)
+FT                   /note="SAUSA300s148	Teg23"
+FT                   /note="PMID:20505759"
+FT                   /note="SAUSA300s148	JKD6008sRNA352"
+FT                   /note="PMID:23733475"
+FT   misc_feature    2386574..2386718
+FT                   /note="SAUSA300s046	rsaOG"
+FT                   /note="PMID:19237465"
+FT   misc_feature    2395327..2397055
+FT                   /note="SAUSA300s252	JKD6008sRNA357"
+FT                   /note="PMID:23733475"
+FT   misc_feature    2398907..2400150
+FT                   /note="SAUSA300s253	JKD6008sRNA358"
+FT                   /note="PMID:23733475"
+FT   misc_feature    complement(2400197..2400304)
+FT                   /note="SAUSA300s025	SAM riboswitch"
+FT   misc_feature    complement(2432461..2433490)
+FT                   /note="SAUSA300s254	JKD6008sRNA361"
+FT                   /note="PMID:23733475"
+FT   misc_feature    2435536..2437659
+FT                   /note="SAUSA300s184	Sau-6307"
+FT                   /note="PMID:20151104"
+FT   misc_feature    complement(2447673..2447859)
+FT                   /note="SAUSA300s149	Teg26"
+FT                   /note="PMID:20505759"
+FT                   /note="SAUSA300s149	JKD6008sRNA362"
+FT                   /note="PMID:23733475"
+FT   misc_feature    complement(2457723..2458940)
+FT                   /note="SAUSA300s084	Teg27"
+FT                   /note="PMID:20505759"
+FT                   /note="SAUSA300s084	ssr42"
+FT                   /note="PMID:16980476"
+FT                   /note="SAUSA300s084	RsaX18"
+FT                   /note="PMID:19786493"
+FT                   /note="SAUSA300s084	JKD6008sRNA363"
+FT                   /note="PMID:23733475"
+FT   misc_feature    2486190..2486227
+FT                   /note="SAUSA300s102	Teg127"
+FT                   /note="PMID:20505759"
+FT   misc_feature    2491689..2491935
+FT                   /note="SAUSA300s162	Teg25as"
+FT                   /note="PMID:20505759"
+FT                   /note="SAUSA300s162	JKD6008sRNA366"
+FT                   /note="PMID:23733475"
+FT   misc_feature    2495608..2495672
+FT                   /note="SAUSA300s103	Teg130"
+FT                   /note="PMID:20505759"
+FT                   /note="SAUSA300s103	RsaX20"
+FT                   /note="PMID:19786493"
+FT                   /note="SAUSA300s103	JKD6008sRNA367"
+FT                   /note="PMID:23733475"
+FT   misc_feature    2497741..2497959
+FT                   /note="SAUSA300s255	JKD6008sRNA368"
+FT                   /note="PMID:23733475"
+FT   misc_feature    2509169..2509239
+FT                   /note="SAUSA300s055	RsaJ"
+FT                   /note="PMID:19786493"
+FT                   /note="SAUSA300s055	Sau-5837"
+FT                   /note="PMID:20151104"
+FT                   /note="SAUSA300s055	JKD6008sRNA369"
+FT                   /note="PMID:23733475"
+FT   misc_feature    2514857..2514907
+FT                   /note="SAUSA300s108	sprA2-AS"
+FT                   /note="PMID:20505759"
+FT                   /note="SAUSA300s108	JKD6008sRNA370"
+FT                   /note="PMID:23733475"
+FT   misc_feature    complement(2514903..2515103)
+FT                   /note="SAUSA300s028	sprA2"
+FT                   /note="PMID:16183745"
+FT   misc_feature    2550298..2550455
+FT                   /note="SAUSA300s116	ssr7"
+FT                   /note="PMID:16980476"
+FT                   /note="SAUSA300s116	JKD6008sRNA377"
+FT                   /note="PMID:23733475"
+FT   misc_feature    2567523..2568071
+FT                   /note="SAUSA300s299	tsr35"
+FT                   /note="PMID:26861020"
+FT   misc_feature    2567596..2568104
+FT                   /note="SAUSA300s300	tsr36"
+FT                   /note="PMID:26861020"
+FT   misc_feature    complement(2570319..2570510)
+FT                   /note="SAUSA300s078	rsaOT"
+FT                   /note="PMID:20511587"
+FT                   /note="SAUSA300s078	ssr43"
+FT                   /note="PMID:16980476"
+FT   misc_feature    2570905..2571119
+FT                   /note="SAUSA300s058	Sau-19"
+FT                   /note="PMID:20151104"
+FT                   /note="SAUSA300s058	RsaX21"
+FT                   /note="PMID:19786493"
+FT   misc_feature    2577300..2577359
+FT                   /note="SAUSA300s069	Sau-5949"
+FT                   /note="PMID:20151104"
+FT   misc_feature    2582938..2583275
+FT                   /note="SAUSA300s301	tsr37"
+FT                   /note="PMID:26861020"
+FT   misc_feature    2589936..2590038
+FT                   /note="SAUSA300s111	Teg155"
+FT                   /note="PMID:20505759"
+FT   misc_feature    2611811..2612072
+FT                   /note="SAUSA300s110	sprA3"
+FT                   /note="PMID:16183745"
+FT   misc_feature    2612057..2612163
+FT                   /note="SAUSA300s109	sprA3-AS"
+FT                   /note="PMID:20505759"
+FT                   /note="SAUSA300s109	RsaX23"
+FT                   /note="PMID:19786493"
+FT                   /note="SAUSA300s109	JKD6008sRNA384"
+FT                   /note="PMID:23733475"
+FT   misc_feature    2624274..2624626
+FT                   /note="SAUSA300s257	JKD6008sRNA385"
+FT                   /note="PMID:23733475"
+FT   misc_feature    2635373..2635466
+FT                   /note="SAUSA300s079	rsaOU"
+FT                   /note="PMID:20511587"
+FT   misc_feature    2639984..2640037
+FT                   /note="SAUSA300s073	Sau-6072"
+FT                   /note="PMID:20151104"
+FT   misc_feature    2655804..2655931
+FT                   /note="SAUSA300s080	rsaOV"
+FT                   /note="PMID:20511587"
+FT   misc_feature    2659046..2659570
+FT                   /note="SAUSA300s188	Sau-6416"
+FT                   /note="PMID:20151104"
+FT   misc_feature    2673012..2673971
+FT                   /note="SAUSA300s195	Sau-6745"
+FT                   /note="PMID:20151104"
+FT   misc_feature    2673953..2674048
+FT                   /note="SAUSA300s151	Teg134"
+FT                   /note="PMID:20505759"
+FT                   /note="SAUSA300s151	JKD6008sRNA392"
+FT                   /note="PMID:23733475"
+FT   misc_feature    2691494..2692069
+FT                   /note="SAUSA300s180	Sau-39"
+FT                   /note="PMID:20151104"
+FT   misc_feature    2706244..2706554
+FT                   /note="SAUSA300s260	JKD6008sRNA396"
+FT                   /note="PMID:23733475"
+FT   misc_feature    complement(2709562..2709714)
+FT                   /note="SAUSA300s124	ssr44"
+FT                   /note="PMID:16980476"
+FT   misc_feature    2709754..2710076
+FT                   /note="SAUSA300s261	JKD6008sRNA397"
+FT                   /note="PMID:23733475"
+FT   misc_feature    complement(2728685..2728788)
+FT                   /note="SAUSA300s085	Teg32"
+FT                   /note="PMID:20505759"
+FT                   /note="SAUSA300s085	JKD6008sRNA399"
+FT                   /note="PMID:23733475"
+FT   misc_feature    2729015..2731811
+FT                   /note="SAUSA300s178	Sau-34"
+FT                   /note="PMID:20151104"
+FT   misc_feature    2734645..2734749
+FT                   /note="SAUSA300s057	Sau-13"
+FT                   /note="PMID:20151104"
+FT   misc_feature    2740531..2743420
+FT                   /note="SAUSA300s262	JKD6008sRNA401"
+FT                   /note="PMID:23733475"
+FT   misc_feature    2754432..2754998
+FT                   /note="SAUSA300s179	Sau-37"
+FT                   /note="PMID:20151104"
+FT   misc_feature    2760513..2761315
+FT                   /note="SAUSA300s263	JKD6008sRNA403"
+FT                   /note="PMID:23733475"
+FT   misc_feature    2764461..2764619
+FT                   /note="SAUSA300s163	Teg28as"
+FT                   /note="PMID:20505759"
+FT                   /note="SAUSA300s163	JKD6008sRNA404"
+FT                   /note="PMID:23733475"
+FT   misc_feature    2774079..2774132
+FT                   /note="SAUSA300s303	tsr39"
+FT                   /note="PMID:26861020"
+FT   misc_feature    complement(2788397..2788776)
+FT                   /note="SAUSA300s104	Teg141"
+FT                   /note="PMID:20505759"
+FT                   /note="SAUSA300s104	RsaX25"
+FT                   /note="PMID:19786493"
+FT                   /note="SAUSA300s104	JKD6008sRNA406"
+FT                   /note="PMID:23733475"
+FT   misc_feature    complement(2792987..2793160)
+FT                   /note="SAUSA300s135	ssr100"
+FT                   /note="PMID:16980476"
