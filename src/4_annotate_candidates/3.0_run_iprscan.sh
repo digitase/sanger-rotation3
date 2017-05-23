@@ -1,6 +1,6 @@
-
-
-
+#
+# Run iprscan on CDSs that have insufficient/no annotation for all STs
+#
 
 IPR_DIR="/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/packages/interproscan-5.23-62.0/"
 # Meet installation requirements

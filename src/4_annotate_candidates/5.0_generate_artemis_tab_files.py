@@ -60,7 +60,7 @@ for st, tabfile in tabfiles.items():
                             output_lines.append('FT                   /homoplasy=1\n')
                         #  Add a qualifier with the sts that the snp is homoplasic in 
                         elif line.startswith('FT   SNP'): 
-                            output_lines.append('FT                   /homoplasy_sts="{}"\n'.format','.join(st_snp_to_hp_sts[(st, ft_snp_loc)])))
+                            output_lines.append('FT                   /homoplasy_sts="{}"\n'.format(','.join(st_snp_to_hp_sts[(st, ft_snp_loc)])))
                             break
                         else:
                             output_lines.append(line)
