@@ -36,7 +36,7 @@ bsub \
     -J "interproscan_all_array[1-$n_chunks]" \
     -o "$outdir/logs/jobid_%J.%I.bsub_o.log" \
     -e "$outdir/logs/jobid_%J.%I.bsub_e.log" \
-        "bash 3.0_run_iprscan_all_helper.sh $IPR_DIR $outdir"
+        "bash _3.0_run_iprscan_all_helper.sh $IPR_DIR $outdir"
 
 exit
 # NOTE: analyses below run 1 st at a time (around 2.5k loci per ST)
