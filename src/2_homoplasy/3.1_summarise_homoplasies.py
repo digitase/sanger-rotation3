@@ -112,7 +112,7 @@ def annotate_homoplasies(hp, embl_file):
     # No need check SNP strand, as convergence/reversal is tagged regardless of strand of SNP.
     print('Building SNP -> gene dict...')
     loc_features = collections.defaultdict(list)
-    accepted_types = {"CDS"}
+    accepted_types = {'CDS', 'ncRNA', 'rRNA', 'tRNA'}
     #
     # pybedtools solution
     #
@@ -229,7 +229,8 @@ if __name__ == "__main__":
         "st8": "/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/2_homoplasy/summarise_homoplasies/S.aureus_ST8_BSAC_Pfizer_revised/S.aureus_ST8_BSAC_Pfizer_revised_homoplasies_on_tree.{}.csv"
     }
     embl_files = {
-        "st22": '/lustre/scratch118/infgen/team81/dj9/staph.aureus/ben/st22/CC22_EMRSA15.embl',
+        #  "st22": '/lustre/scratch118/infgen/team81/dj9/staph.aureus/ben/st22/CC22_EMRSA15.embl',
+        "st22": '/nfs/users/nfs_b/bb9/workspace/rotation3/misc/2017-05-23_staph_annot_from_matt/EMRSA15_with_Mels_currated.modified.embl',
         "st239": '/lustre/scratch118/infgen/team81/dj9/staph.aureus/ben/st239/CC8_TW20.embl',
         "st30": '/lustre/scratch118/infgen/team81/dj9/staph.aureus/ben/st30/CC30_MRSA252.embl',
         "st8": '/lustre/scratch118/infgen/team81/dj9/staph.aureus/ben/st8/CC8_USA300_FPR3757.embl'

@@ -12,7 +12,8 @@ import os
 out_base_dir = '/nfs/users/nfs_b/bb9/workspace/rotation3/src/3_find_candidates/.output/'
 #
 embl_files = {
-    "st22": "/nfs/users/nfs_b/bb9/workspace/rotation3/data/st22/CC22_EMRSA15.embl",
+    #  "st22": "/nfs/users/nfs_b/bb9/workspace/rotation3/data/st22/CC22_EMRSA15.embl",
+    "st22": "/nfs/users/nfs_b/bb9/workspace/rotation3/misc/2017-05-23_staph_annot_from_matt/EMRSA15_with_Mels_currated.modified.embl",
     "st239": "/nfs/users/nfs_b/bb9/workspace/rotation3/data/st239/CC8_TW20.embl",
     "st30": "/nfs/users/nfs_b/bb9/workspace/rotation3/data/st30/CC30_MRSA252.embl",
     "st8": "/nfs/users/nfs_b/bb9/workspace/rotation3/data/st8/CC8_USA300_FPR3757.embl",
@@ -56,7 +57,7 @@ os.makedirs(os.path.join(out_base_dir, 'blast', 'blast_rbh'), exist_ok=True)
 for sp1, sp2 in itertools.combinations(cds_fastas, 2):
     fa1, fa2 = cds_fastas[sp1], cds_fastas[sp2]
     #
-    bsub_cmd = (r'bsub -G team81 -q normal -n4 -R "select[mem>250] rusage[mem=250] span[hosts=1]" -M 1000 -J "blast_rbh.{sp1}.{sp2}" -o "{olog}" -e "{elog}"'.format(
+    bsub_cmd = (r'bsub -G team81 -q normal -n4 -R "select[mem>1000] rusage[mem=1000] span[hosts=1]" -M 1000 -J "blast_rbh.{sp1}.{sp2}" -o "{olog}" -e "{elog}"'.format(
         sp1=sp1, 
         sp2=sp2,
         olog=os.path.join(out_base_dir, 'blast', 'blast_rbh', 'bsub_o.blast_rbh.{sp1}_{sp2}.log'.format(sp1=sp1, sp2=sp2)),
