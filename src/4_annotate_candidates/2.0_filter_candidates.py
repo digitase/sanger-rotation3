@@ -2,8 +2,8 @@
 '''
 
 import pandas as pd
-from fuzzywuzzy import fuzz
-from fuzzywuzzy import process
+#  from fuzzywuzzy import fuzz
+#  from fuzzywuzzy import process
 from collections import Counter
 
 def flatten_list_or_tuple(xs):
@@ -81,7 +81,7 @@ if __name__ == "__main__":
             if all(g == None for g in gs):
                 existing_results.update(ls)
             for p, l in zip(ps, ls):
-                if 'hypothetical' in p or 'putative' in p:
+                if 'hypothetical' in str(p) or 'putative' in str(p):
                     existing_results.add(l)
         return(existing_results)
     #
