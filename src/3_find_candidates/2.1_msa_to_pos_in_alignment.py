@@ -7,7 +7,7 @@ import pickle
 import collections
 import itertools
 
-mafft = True
+mafft = False
 mauveAligner = True
 
 if mafft:

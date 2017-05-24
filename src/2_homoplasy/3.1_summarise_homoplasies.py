@@ -248,6 +248,7 @@ if __name__ == "__main__":
         dfs[t] = pd.concat([pd.read_csv(f.format(t)) for f in csv_files.values()], keys=csv_files.keys(), names=["st", "i"])
 
     for prefix in csv_files.keys():
+    #  for prefix in ['st22']:
 
         #  prefix = 'st239'
 

@@ -20,9 +20,10 @@ id_to_short_prefix = {
 }
 hp_file_template = "/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/2_homoplasy/summarise_homoplasies/{prefix}/{short_prefix}_homoplasies.csv"
 embl_files = {
-    "st22": "/nfs/users/nfs_b/bb9/workspace/rotation3/data/st22/CC22_EMRSA15.embl",
+    #  "st22": "/nfs/users/nfs_b/bb9/workspace/rotation3/data/st22/CC22_EMRSA15.embl",
+    "st22": "/nfs/users/nfs_b/bb9/workspace/rotation3/misc/2017-05-23_staph_annot_from_matt/EMRSA15_with_Mels_currated.modified.embl",
     "st239": "/nfs/users/nfs_b/bb9/workspace/rotation3/data/st239/CC8_TW20.embl",
-    "st30": "/nfs/users/nfs_b/bb9/workspace/rotation3/data/st30/CC30_MRSA252.embl",
+    #  "st30": "/nfs/users/nfs_b/bb9/workspace/rotation3/data/st30/CC30_MRSA252.embl",
     "st8": "/nfs/users/nfs_b/bb9/workspace/rotation3/data/st8/CC8_USA300_FPR3757.embl",
 }
 #  snps_file_template = "/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/2_homoplasy/summarise_snps/{prefix}/{prefix}.out"
@@ -63,6 +64,4 @@ hps_merged = hps_merged.loc[hps_merged['n_homoplasic_acctran'].astype(bool) | hp
 print('Writing output...')
 dupe_sites = hps_merged[hps_merged.duplicated('loc_in_alignment', keep=False)].sort_values(['loc_in_alignment', 'level_1'])
 dupe_sites.to_csv('/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/3_find_candidates/hp_sites_summary.csv')
-
-# TODO automatic grouping of sites into loci by adjacent identical locus tags?
 
