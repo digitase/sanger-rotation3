@@ -62,6 +62,11 @@ if __name__ == "__main__":
     summary_intergenic = summary_intergenic.query('n_sts > 1')
     summary_intergenic['known_amr_loci'] = list(tag_known_loci(summary_intergenic['genes'], known_amr_loci))
 
+    #  Write out results with known amr loci indicated
+    summary_sites_by_gene.to_csv('.output/hp_sites_summary.known_amr_marked.csv')
+    summary_genic.to_csv('.output/hp_homologs_summary_genic.known_amr_marked.csv')
+    summary_intergenic.to_csv('.output/hp_homologs_summary_intergenic.known_amr_marked.csv')
+
     # Remove records with known amr loci
     summary_sites_by_gene_filtered = summary_sites_by_gene[summary_sites_by_gene['known_amr_loci'].map(lambda sts: all(len(x) == 0 for x in sts))]
     summary_genic_filtered = summary_genic[~summary_genic['known_amr_loci'].astype(bool)]

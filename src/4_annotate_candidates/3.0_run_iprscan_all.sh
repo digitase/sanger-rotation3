@@ -8,7 +8,7 @@ PY27_DIR="/software/pathogen/external/apps/usr/local/Python-2.7.13/bin/"
 export JAVA_HOME="/nfs/users/nfs_b/bb9/packages/jre1.8.0_121/"
 export PATH="$JAVA_HOME/bin/:$PY27_DIR:$PATH"
 
-outdir=".output/interproscan_all_array"
+outdir=".output/interproscan_all_array/"
 mkdir -p "$outdir"
 outdir="$(readlink -f $outdir)"
 
@@ -23,6 +23,7 @@ cat "/lustre/scratch118/infgen/team81/bb9/3_find_candidates/blast/fasta/"st*.cds
 mkdir -p "$outdir/fasta_chunks"
 cat "$outdir/st_all.cds.pep.fasta" | parallel --pipe -N200 --recstart '>' "cat > $outdir/fasta_chunks/st_all.cds.pep.fasta.{#}"
 n_chunks=$(ls "$outdir/fasta_chunks"/st_all.cds.pep.fasta.* | wc -l)
+echo Running $n_chunks chunks.
 
 # Excluded analyses:
 # Gene3D
@@ -38,8 +39,8 @@ bsub \
     -e "$outdir/logs/jobid_%J.%I.bsub_e.log" \
         "bash _3.0_run_iprscan_all_helper.sh $IPR_DIR $outdir"
 
-exit
 # NOTE: analyses below run 1 st at a time (around 2.5k loci per ST)
+exit
 
     # -R "select[mem>8000] rusage[mem=8000]" -M 8000 \
 bsub \
