@@ -7,6 +7,7 @@ import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
 import operator as op
+import sys
 plt.ion()
 
 # Read in SNPs homoplasic in multiple sts
@@ -39,7 +40,14 @@ hp_files = {
     #  'st30': '/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/2_homoplasy/summarise_homoplasies/S.aureus_ST30_BSAC_Pfizer/st30_homoplasies.csv', 
     'st8': '/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/2_homoplasy/summarise_homoplasies/S.aureus_ST8_BSAC_Pfizer_revised/st8_homoplasies.csv' 
 }
+# without known amr sites
+#  hp_files = {
+    #  'st22': '/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/6_summarise_results/st22_homoplasies.known_amr_filtered.csv', 
+    #  'st239': '/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/6_summarise_results/st239_homoplasies.known_amr_filtered.csv', 
+    #  'st8': '/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/6_summarise_results/st8_homoplasies.known_amr_filtered.csv'
+#  }
 
+hp_merged = []
 for prefix in hp_files.keys():
     #  prefix = 'st22'
     hp = pd.read_csv( 
@@ -55,38 +63,83 @@ for prefix in hp_files.keys():
             if prefix == st:
                 locs_in_st.add(loc)
     hp['is_hp_multi'] = hp['loc'].isin(locs_in_st)
-    #  test both at the one st and multist levels
-    #  including and excluding known amrs
-    cont_table = [
-        [sum(hp['is_hp'] & hp['is_intergenic']), sum(~hp['is_hp'] & hp['is_intergenic'])],
-        [sum(hp['is_hp'] & ~hp['is_intergenic']), sum(~hp['is_hp'] & ~hp['is_intergenic'])]
-    ]
-    print('===== {} ====='.format(prefix))
-    print('is_hp')
-    print('[[hi, ni], [hg, ng]]')
-    print(cont_table)
-    print(scipy.stats.fisher_exact(cont_table))
-    cont_table = [
-        [sum(hp['is_hp_multi'] & hp['is_intergenic']), sum(~hp['is_hp_multi'] & hp['is_intergenic'])],
-        [sum(hp['is_hp_multi'] & ~hp['is_intergenic']), sum(~hp['is_hp_multi'] & ~hp['is_intergenic'])]
-    ]
-    print('is_hp_multi')
-    print('[[hi, ni], [hg, ng]]')
-    print(cont_table)
-    print(scipy.stats.fisher_exact(cont_table))
+    hp_merged.append(hp)
+    # Per strain tests
+    #
+    #  cont_table = [
+        #  [sum(hp['is_hp'] & hp['is_intergenic']), sum(~hp['is_hp'] & hp['is_intergenic'])],
+        #  [sum(hp['is_hp'] & ~hp['is_intergenic']), sum(~hp['is_hp'] & ~hp['is_intergenic'])]
+    #  ]
+    #  print('===== {} ====='.format(prefix))
+    #  print('is_hp')
+    #  print('[[hi, ni], [hg, ng]]')
+    #  print(cont_table)
+    #  print(scipy.stats.fisher_exact(cont_table))
+    #  cont_table = [
+        #  [sum(hp['is_hp_multi'] & hp['is_intergenic']), sum(~hp['is_hp_multi'] & hp['is_intergenic'])],
+        #  [sum(hp['is_hp_multi'] & ~hp['is_intergenic']), sum(~hp['is_hp_multi'] & ~hp['is_intergenic'])]
+    #  ]
+    #  print('is_hp_multi')
+    #  print('[[hi, ni], [hg, ng]]')
+    #  print(cont_table)
+    #  print(scipy.stats.fisher_exact(cont_table))
+hp_merged = pd.concat(hp_merged)
+hp_merged['dist_to_locus'] = hp_merged['intergenic'].map(op.itemgetter(0))
 
-hp['dist_to_locus'] = hp['intergenic'].map(op.itemgetter(0))
+# Plotting dist to locus
+plt.figure(figsize=(11, 6))
+sns.distplot( 
+    hp_merged.loc[~hp_merged.is_hp, 'dist_to_locus'],
+    kde=False, bins=150, label='Non-homoplasic', hist_kws={"alpha": 1, "color": "grey"}
+)
+sns.distplot( 
+    hp_merged.loc[hp_merged.is_hp, 'dist_to_locus'],
+    kde=False, bins=150, label='Homoplasic in >=1 ST', hist_kws={"alpha": 1, "color": "lightblue"}
+)
+sns.distplot( 
+    hp_merged.loc[hp_merged.is_hp_multi, 'dist_to_locus'],
+    kde=False, bins=150, label='Homoplasic in >1 ST', hist_kws={"alpha": 1, "color": "darkblue"}
+)
+plt.yscale('log')
+plt.ylabel('Frequency')
+plt.xlabel('Location relative to nearest locus')
+plt.legend()
+plt.savefig('.output/analyse_snp_locus_dist.pdf')
 
-hp['dist_to_locus'].replace(0, 1e-12)
+#  Are there more hps than expected in intergenic regions?
+#
+# log output
+orig_stdout = sys.stdout
+sys.stdout = open('.output/analyse_snp_locus_dist.results.txt','w')
+#
+cont_table = pd.crosstab(hp_merged['is_hp'], hp_merged['is_intergenic'])
+print(cont_table)
+print(scipy.stats.fisher_exact(cont_table))
+#
+cont_table = pd.crosstab(hp_merged['is_hp_multi'], hp_merged['is_intergenic'])
+print(cont_table)
+print(scipy.stats.fisher_exact(cont_table))
 
-hp[hp.is_hp]['intergenic'].map(op.itemgetter(0)).hist()
+#  Are there more hps than expected in a certain region upstream of genes?
+hp_merged['in_region'] = ( hp_merged['dist_to_locus'] < 0 ) & (hp_merged['dist_to_locus'] >= -150)
+#
+cont_table = pd.crosstab(hp_merged.loc[hp_merged.is_intergenic, 'is_hp_multi'], hp_merged.loc[hp_merged.is_intergenic, 'in_region'])
+print(cont_table)
+print(scipy.stats.fisher_exact(cont_table))
+#
+cont_table = pd.crosstab(hp_merged.loc[hp_merged.is_intergenic, 'is_hp'], hp_merged.loc[hp_merged.is_intergenic, 'in_region'])
+print(cont_table)
+print(scipy.stats.fisher_exact(cont_table))
 
-hp.is_hp = hp.is_hp.astype('category')
-hp.is_intergenic = hp.is_intergenic.astype('category')
+#
+sys.stdout.close()
+sys.stdout = orig_stdout
 
-tips = sns.load_dataset("tips")
-g = sns.FacetGrid(hp, row="is_hp", col="is_intergenic", margin_titles=True)
-bins = np.linspace(-750, 750, 150)
-g.map(plt.hist, "dist_to_locus", color="steelblue", bins=bins, lw=0)
-g.set(ylim=(None, 100))
+#  hp_merged.is_hp = hp_merged.is_hp.astype('category')
+#  hp_merged.is_intergenic = hp_merged.is_intergenic.astype('category')
+#
+#  g = sns.FacetGrid(hp_merged, row="is_hp", margin_titles=True)
+#  bins = np.linspace(-750, 750, 150)
+#  g.map(plt.hist, "dist_to_locus", color="steelblue", bins=bins, lw=0)
+#  g.set(yscale='log')
 

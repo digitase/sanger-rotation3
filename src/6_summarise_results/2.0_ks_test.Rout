@@ -1,0 +1,687 @@
+
+R version 3.3.0 (2016-05-03) -- "Supposedly Educational"
+Copyright (C) 2016 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> # Determine whether locations of snps and hp snps relative to loci are drawn from the same distribution
+> 
+> library(Matching)
+Loading required package: MASS
+## 
+##  Matching (Version 4.9-2, Build Date: 2015-12-25)
+##  See http://sekhon.berkeley.edu/matching for additional documentation.
+##  Please cite software as:
+##   Jasjeet S. Sekhon. 2011. ``Multivariate and Propensity Score Matching
+##   Software with Automated Balance Optimization: The Matching package for R.''
+##   Journal of Statistical Software, 42(7): 1-52. 
+##
+
+> library(data.table)
+> library(afex)
+Loading required package: lme4
+Loading required package: Matrix
+Loading required package: lsmeans
+Loading required package: estimability
+************
+Welcome to afex. For support visit: http://afex.singmann.science/
+- Functions for ANOVAs: aov_car(), aov_ez(), and aov_4()
+- Methods for calculating p-values with mixed(): 'KR', 'S', 'LRT', and 'PB'
+- 'afex_aov' and 'mixed' objects can be passed to lsmeans() for follow-up tests
+- Get and set global package options with: afex_options()
+- Set orthogonal sum-to-zero contrasts globally: set_sum_contrasts()
+- For example analyses see: browseVignettes("afex")
+************
+
+Attaching package: ‘afex’
+
+The following object is masked from ‘package:lme4’:
+
+    lmer
+
+> 
+> hp_files = c(
++     '/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/2_homoplasy/summarise_homoplasies/S.aureus_ST22_BSAC_Pfizer/st22_homoplasies.csv',
++     '/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/2_homoplasy/summarise_homoplasies/S.aureus_ST239_global_Singapore_Pfizer/st239_homoplasies.csv',
++     # '/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/2_homoplasy/summarise_homoplasies/S.aureus_ST30_BSAC_Pfizer/st30_homoplasies.csv',
++     '/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/2_homoplasy/summarise_homoplasies/S.aureus_ST8_BSAC_Pfizer_revised/st8_homoplasies.csv'
++ )
+> names(hp_files) <- c(
++     'st22', 
++     'st239', 
++     # 'st30', 
++     'st8'
++ )
+> 
+> # read in hp locations
+> hps <- list()
+> i <- 1
+> for (hp_file in hp_files) {
++     hp <- fread(hp_file)
++     hp$dist_to_locus <- unlist(lapply(hp$intergenic, function(x) strtoi(gsub('\\(|,|\\)', '', as.character(x)))))
++     hps[[i]] <- hp
++     i <- i + 1
++ }
+> hps <- rbindlist(hps)
+> 
+> sink('.output/ks_test.results.txt', split=T)
+> print('ks.boot package:Matching Bootstrap Kolmogorov-Smirnov')
+[1] "ks.boot package:Matching Bootstrap Kolmogorov-Smirnov"
+> ks.boot(
++     hps[(n_homoplasic_acctran > 0 | n_homoplasic_deltran > 0), 'dist_to_locus'], 
++     hps[!(n_homoplasic_acctran > 0 | n_homoplasic_deltran > 0), 'dist_to_locus'], 
++     nboots=1000, alternative="two.sided", print.level=1
++ )
+ks.boot: two.sided test
+$ks.boot.pvalue
+[1] 0
+
+$ks
+
+	Two-sample Kolmogorov-Smirnov test
+
+data:  Tr and Co
+D = 0.11781, p-value < 2.2e-16
+alternative hypothesis: two-sided
+
+
+$nboots
+[1] 1000
+
+attr(,"class")
+[1] "ks.boot"
+> # Two-sample Kolmogorov-Smirnov test
+> 
+> # data:  Tr and Co
+> # D = 0.10313, p-value = 5.607e-14
+> # alternative hypothesis: two-sided
+> 
+> hps[is.na(dist_to_locus)]
+        loc
+ 1: 1462350
+ 2: 1462351
+ 3: 1462335
+ 4:  124127
+ 5:  265972
+ 6:  571702
+ 7:  753610
+ 8: 1108108
+ 9: 1108127
+10: 1108186
+11: 1143954
+12: 1292526
+13: 1318759
+14: 1339152
+15: 1360354
+16: 1462231
+17: 1462236
+18: 1462291
+19: 1462316
+20: 1462334
+21: 1462344
+22: 2283940
+23: 2361378
+24: 2398117
+25: 2495434
+26: 2619325
+27: 2625584
+28: 2737090
+29: 1432309
+30: 1630048
+31: 2360943
+32: 2440857
+33: 2620318
+34: 2710989
+35: 2863855
+36: 1995391
+37:   22326
+38:  238102
+39:  476788
+40:  568613
+41:  618699
+42:  627917
+43:  641510
+44:  712204
+45: 1005125
+46: 1249025
+47: 1520132
+48: 1647012
+49: 1651604
+50: 2225961
+51: 2405772
+52: 2693361
+        loc
+                                                               change_acctran
+ 1:                           Counter({('G->T', 'Intergenic', 'forward'): 5})
+ 2:                           Counter({('C->A', 'Intergenic', 'forward'): 5})
+ 3:                           Counter({('G->T', 'Intergenic', 'forward'): 2})
+ 4:                           Counter({('A->G', 'Intergenic', 'forward'): 1})
+ 5:                           Counter({('G->A', 'Intergenic', 'forward'): 1})
+ 6:                           Counter({('T->C', 'Intergenic', 'forward'): 1})
+ 7:                           Counter({('T->C', 'Intergenic', 'forward'): 1})
+ 8:                           Counter({('C->A', 'Intergenic', 'forward'): 1})
+ 9:                           Counter({('T->C', 'Intergenic', 'forward'): 1})
+10:                           Counter({('C->T', 'Intergenic', 'forward'): 1})
+11: Counter({('C->A', 'SNOP (non-stop codon to stop condon)', 'forward'): 1})
+12:                           Counter({('C->T', 'Intergenic', 'forward'): 1})
+13:                           Counter({('T->G', 'Intergenic', 'forward'): 1})
+14:                           Counter({('A->G', 'Intergenic', 'forward'): 1})
+15:                           Counter({('G->T', 'Intergenic', 'forward'): 1})
+16:                           Counter({('T->C', 'Intergenic', 'forward'): 1})
+17:                           Counter({('T->C', 'Intergenic', 'forward'): 1})
+18:                           Counter({('G->A', 'Intergenic', 'forward'): 1})
+19:                           Counter({('C->A', 'Intergenic', 'forward'): 1})
+20:                           Counter({('T->C', 'Intergenic', 'forward'): 1})
+21:                           Counter({('A->G', 'Intergenic', 'forward'): 1})
+22:                           Counter({('A->G', 'Intergenic', 'forward'): 1})
+23:                           Counter({('T->A', 'Intergenic', 'forward'): 1})
+24:                           Counter({('T->A', 'Intergenic', 'forward'): 1})
+25:                           Counter({('A->G', 'Intergenic', 'forward'): 1})
+26:                           Counter({('C->T', 'Intergenic', 'forward'): 1})
+27:                           Counter({('T->C', 'Intergenic', 'forward'): 1})
+28:                           Counter({('T->C', 'Intergenic', 'forward'): 1})
+29:                           Counter({('T->C', 'Intergenic', 'forward'): 1})
+30:                           Counter({('A->G', 'Intergenic', 'forward'): 1})
+31:                           Counter({('A->T', 'Intergenic', 'forward'): 1})
+32:                           Counter({('A->T', 'Intergenic', 'forward'): 1})
+33:                           Counter({('T->G', 'Intergenic', 'forward'): 1})
+34:                           Counter({('A->G', 'Intergenic', 'forward'): 1})
+35:                           Counter({('G->A', 'Intergenic', 'forward'): 1})
+36:                           Counter({('A->G', 'Intergenic', 'forward'): 7})
+37:                           Counter({('T->A', 'Intergenic', 'forward'): 1})
+38:                           Counter({('C->T', 'Intergenic', 'forward'): 1})
+39:                           Counter({('A->G', 'Intergenic', 'forward'): 1})
+40:                           Counter({('A->G', 'Intergenic', 'forward'): 1})
+41:                           Counter({('G->T', 'Intergenic', 'forward'): 1})
+42:                           Counter({('T->G', 'Intergenic', 'forward'): 1})
+43:                           Counter({('A->G', 'Intergenic', 'forward'): 1})
+44:                           Counter({('T->C', 'Intergenic', 'forward'): 1})
+45:                           Counter({('C->T', 'Intergenic', 'forward'): 1})
+46:                           Counter({('T->C', 'Intergenic', 'forward'): 1})
+47:                           Counter({('C->T', 'Intergenic', 'forward'): 1})
+48:                           Counter({('A->G', 'Intergenic', 'forward'): 1})
+49:                           Counter({('C->T', 'Intergenic', 'forward'): 1})
+50:                           Counter({('G->A', 'Intergenic', 'forward'): 1})
+51:                           Counter({('C->T', 'Intergenic', 'forward'): 1})
+52:                           Counter({('G->A', 'Intergenic', 'forward'): 1})
+                                                               change_acctran
+    n_convergence_acctran n_reversal_acctran n_total_acctran
+ 1:                     4                  0               5
+ 2:                     4                  0               5
+ 3:                     1                  0               2
+ 4:                     0                  0               1
+ 5:                     0                  0               1
+ 6:                     0                  0               1
+ 7:                     0                  0               1
+ 8:                     0                  0               1
+ 9:                     0                  0               1
+10:                     0                  0               1
+11:                     0                  0               1
+12:                     0                  0               1
+13:                     0                  0               1
+14:                     0                  0               1
+15:                     0                  0               1
+16:                     0                  0               1
+17:                     0                  0               1
+18:                     0                  0               1
+19:                     0                  0               1
+20:                     0                  0               1
+21:                     0                  0               1
+22:                     0                  0               1
+23:                     0                  0               1
+24:                     0                  0               1
+25:                     0                  0               1
+26:                     0                  0               1
+27:                     0                  0               1
+28:                     0                  0               1
+29:                     0                  0               1
+30:                     0                  0               1
+31:                     0                  0               1
+32:                     0                  0               1
+33:                     0                  0               1
+34:                     0                  0               1
+35:                     0                  0               1
+36:                     6                  0               7
+37:                     0                  0               1
+38:                     0                  0               1
+39:                     0                  0               1
+40:                     0                  0               1
+41:                     0                  0               1
+42:                     0                  0               1
+43:                     0                  0               1
+44:                     0                  0               1
+45:                     0                  0               1
+46:                     0                  0               1
+47:                     0                  0               1
+48:                     0                  0               1
+49:                     0                  0               1
+50:                     0                  0               1
+51:                     0                  0               1
+52:                     0                  0               1
+    n_convergence_acctran n_reversal_acctran n_total_acctran
+    n_homoplasic_acctran
+ 1:                    4
+ 2:                    4
+ 3:                    1
+ 4:                    0
+ 5:                    0
+ 6:                    0
+ 7:                    0
+ 8:                    0
+ 9:                    0
+10:                    0
+11:                    0
+12:                    0
+13:                    0
+14:                    0
+15:                    0
+16:                    0
+17:                    0
+18:                    0
+19:                    0
+20:                    0
+21:                    0
+22:                    0
+23:                    0
+24:                    0
+25:                    0
+26:                    0
+27:                    0
+28:                    0
+29:                    0
+30:                    0
+31:                    0
+32:                    0
+33:                    0
+34:                    0
+35:                    0
+36:                    6
+37:                    0
+38:                    0
+39:                    0
+40:                    0
+41:                    0
+42:                    0
+43:                    0
+44:                    0
+45:                    0
+46:                    0
+47:                    0
+48:                    0
+49:                    0
+50:                    0
+51:                    0
+52:                    0
+    n_homoplasic_acctran
+                                                               change_deltran
+ 1:                           Counter({('G->T', 'Intergenic', 'forward'): 5})
+ 2:                           Counter({('C->A', 'Intergenic', 'forward'): 5})
+ 3:                           Counter({('G->T', 'Intergenic', 'forward'): 2})
+ 4:                           Counter({('A->G', 'Intergenic', 'forward'): 1})
+ 5:                           Counter({('G->A', 'Intergenic', 'forward'): 1})
+ 6:                           Counter({('T->C', 'Intergenic', 'forward'): 1})
+ 7:                           Counter({('T->C', 'Intergenic', 'forward'): 1})
+ 8:                           Counter({('C->A', 'Intergenic', 'forward'): 1})
+ 9:                           Counter({('T->C', 'Intergenic', 'forward'): 1})
+10:                           Counter({('C->T', 'Intergenic', 'forward'): 1})
+11: Counter({('C->A', 'SNOP (non-stop codon to stop condon)', 'forward'): 1})
+12:                           Counter({('C->T', 'Intergenic', 'forward'): 1})
+13:                           Counter({('T->G', 'Intergenic', 'forward'): 1})
+14:                           Counter({('A->G', 'Intergenic', 'forward'): 1})
+15:                           Counter({('G->T', 'Intergenic', 'forward'): 1})
+16:                           Counter({('T->C', 'Intergenic', 'forward'): 1})
+17:                           Counter({('T->C', 'Intergenic', 'forward'): 1})
+18:                           Counter({('G->A', 'Intergenic', 'forward'): 1})
+19:                           Counter({('C->A', 'Intergenic', 'forward'): 1})
+20:                           Counter({('T->C', 'Intergenic', 'forward'): 1})
+21:                           Counter({('A->G', 'Intergenic', 'forward'): 1})
+22:                           Counter({('A->G', 'Intergenic', 'forward'): 1})
+23:                           Counter({('T->A', 'Intergenic', 'forward'): 1})
+24:                           Counter({('T->A', 'Intergenic', 'forward'): 1})
+25:                           Counter({('A->G', 'Intergenic', 'forward'): 1})
+26:                           Counter({('C->T', 'Intergenic', 'forward'): 1})
+27:                           Counter({('T->C', 'Intergenic', 'forward'): 1})
+28:                           Counter({('T->C', 'Intergenic', 'forward'): 1})
+29:                           Counter({('T->C', 'Intergenic', 'forward'): 1})
+30:                           Counter({('A->G', 'Intergenic', 'forward'): 1})
+31:                           Counter({('A->T', 'Intergenic', 'forward'): 1})
+32:                           Counter({('A->T', 'Intergenic', 'forward'): 1})
+33:                           Counter({('T->G', 'Intergenic', 'forward'): 1})
+34:                           Counter({('A->G', 'Intergenic', 'forward'): 1})
+35:                           Counter({('G->A', 'Intergenic', 'forward'): 1})
+36:                           Counter({('A->G', 'Intergenic', 'forward'): 7})
+37:                           Counter({('T->A', 'Intergenic', 'forward'): 1})
+38:                           Counter({('C->T', 'Intergenic', 'forward'): 1})
+39:                           Counter({('A->G', 'Intergenic', 'forward'): 1})
+40:                           Counter({('A->G', 'Intergenic', 'forward'): 1})
+41:                           Counter({('G->T', 'Intergenic', 'forward'): 1})
+42:                           Counter({('T->G', 'Intergenic', 'forward'): 1})
+43:                           Counter({('A->G', 'Intergenic', 'forward'): 1})
+44:                           Counter({('T->C', 'Intergenic', 'forward'): 1})
+45:                           Counter({('C->T', 'Intergenic', 'forward'): 1})
+46:                           Counter({('T->C', 'Intergenic', 'forward'): 1})
+47:                           Counter({('C->T', 'Intergenic', 'forward'): 1})
+48:                           Counter({('A->G', 'Intergenic', 'forward'): 1})
+49:                           Counter({('C->T', 'Intergenic', 'forward'): 1})
+50:                           Counter({('G->A', 'Intergenic', 'forward'): 1})
+51:                           Counter({('C->T', 'Intergenic', 'forward'): 1})
+52:                           Counter({('G->A', 'Intergenic', 'forward'): 1})
+                                                               change_deltran
+    n_convergence_deltran n_reversal_deltran n_total_deltran
+ 1:                     4                  0               5
+ 2:                     4                  0               5
+ 3:                     1                  0               2
+ 4:                     0                  0               1
+ 5:                     0                  0               1
+ 6:                     0                  0               1
+ 7:                     0                  0               1
+ 8:                     0                  0               1
+ 9:                     0                  0               1
+10:                     0                  0               1
+11:                     0                  0               1
+12:                     0                  0               1
+13:                     0                  0               1
+14:                     0                  0               1
+15:                     0                  0               1
+16:                     0                  0               1
+17:                     0                  0               1
+18:                     0                  0               1
+19:                     0                  0               1
+20:                     0                  0               1
+21:                     0                  0               1
+22:                     0                  0               1
+23:                     0                  0               1
+24:                     0                  0               1
+25:                     0                  0               1
+26:                     0                  0               1
+27:                     0                  0               1
+28:                     0                  0               1
+29:                     0                  0               1
+30:                     0                  0               1
+31:                     0                  0               1
+32:                     0                  0               1
+33:                     0                  0               1
+34:                     0                  0               1
+35:                     0                  0               1
+36:                     6                  0               7
+37:                     0                  0               1
+38:                     0                  0               1
+39:                     0                  0               1
+40:                     0                  0               1
+41:                     0                  0               1
+42:                     0                  0               1
+43:                     0                  0               1
+44:                     0                  0               1
+45:                     0                  0               1
+46:                     0                  0               1
+47:                     0                  0               1
+48:                     0                  0               1
+49:                     0                  0               1
+50:                     0                  0               1
+51:                     0                  0               1
+52:                     0                  0               1
+    n_convergence_deltran n_reversal_deltran n_total_deltran
+    n_homoplasic_deltran agree_acctran_deltran
+ 1:                    4                  TRUE
+ 2:                    4                  TRUE
+ 3:                    1                  TRUE
+ 4:                    0                  TRUE
+ 5:                    0                  TRUE
+ 6:                    0                  TRUE
+ 7:                    0                  TRUE
+ 8:                    0                  TRUE
+ 9:                    0                  TRUE
+10:                    0                  TRUE
+11:                    0                  TRUE
+12:                    0                  TRUE
+13:                    0                  TRUE
+14:                    0                  TRUE
+15:                    0                  TRUE
+16:                    0                  TRUE
+17:                    0                  TRUE
+18:                    0                  TRUE
+19:                    0                  TRUE
+20:                    0                  TRUE
+21:                    0                  TRUE
+22:                    0                  TRUE
+23:                    0                  TRUE
+24:                    0                  TRUE
+25:                    0                  TRUE
+26:                    0                  TRUE
+27:                    0                  TRUE
+28:                    0                  TRUE
+29:                    0                  TRUE
+30:                    0                  TRUE
+31:                    0                  TRUE
+32:                    0                  TRUE
+33:                    0                  TRUE
+34:                    0                  TRUE
+35:                    0                  TRUE
+36:                    6                  TRUE
+37:                    0                  TRUE
+38:                    0                  TRUE
+39:                    0                  TRUE
+40:                    0                  TRUE
+41:                    0                  TRUE
+42:                    0                  TRUE
+43:                    0                  TRUE
+44:                    0                  TRUE
+45:                    0                  TRUE
+46:                    0                  TRUE
+47:                    0                  TRUE
+48:                    0                  TRUE
+49:                    0                  TRUE
+50:                    0                  TRUE
+51:                    0                  TRUE
+52:                    0                  TRUE
+    n_homoplasic_deltran agree_acctran_deltran
+                                     locus_tag                   gene
+ 1:   (('SAUSA300s174',), ('SAEMRSA1512970',))       (('ebh',), None)
+ 2:   (('SAUSA300s174',), ('SAEMRSA1512970',))       (('ebh',), None)
+ 3:   (('SAUSA300s174',), ('SAEMRSA1512970',))       (('ebh',), None)
+ 4: (('SAEMRSA1500990',), ('SAEMRSA1501000',))      (('sodM',), None)
+ 5: (('SAEMRSA1502110',), ('SAEMRSA1502120',))                (None,)
+ 6: (('SAEMRSA1504800',), ('SAEMRSA1504790',))                (None,)
+ 7: (('SAEMRSA1506550',), ('SAEMRSA1506540',))                (None,)
+ 8:   (('SAEMRSA1509910',), ('SAUSA300s285',))                (None,)
+ 9:   (('SAEMRSA1509910',), ('SAUSA300s285',))                (None,)
+10:   (('SAEMRSA1509910',), ('SAUSA300s285',))                (None,)
+11:                     (('SAEMRSA1510270',),)                (None,)
+12: (('SAEMRSA1511630',), ('SAEMRSA1511640',))                (None,)
+13: (('SAEMRSA1511920',), ('SAEMRSA1511910',))                (None,)
+14: (('SAEMRSA1512050',), ('SAEMRSA1512040',))                (None,)
+15: (('SAEMRSA1512240',), ('SAEMRSA1512230',))      (('femB',), None)
+16:   (('SAUSA300s174',), ('SAEMRSA1512970',))       (('ebh',), None)
+17:   (('SAUSA300s174',), ('SAEMRSA1512970',))       (('ebh',), None)
+18:   (('SAUSA300s174',), ('SAEMRSA1512970',))       (('ebh',), None)
+19:   (('SAUSA300s174',), ('SAEMRSA1512970',))       (('ebh',), None)
+20:   (('SAUSA300s174',), ('SAEMRSA1512970',))       (('ebh',), None)
+21:   (('SAUSA300s174',), ('SAEMRSA1512970',))       (('ebh',), None)
+22: (('SAEMRSA1520940',), ('SAEMRSA1520930',))      (('lacG',), None)
+23: (('SAEMRSA1521850',), ('SAEMRSA1521840',))      (('ureA',), None)
+24: (('SAEMRSA1522220',), ('SAEMRSA1522230',))                (None,)
+25:   (('SAEMRSA1523140',), ('SAUSA300s103',))                (None,)
+26: (('SAEMRSA1524230',), ('SAEMRSA1524220',))       (('ddh',), None)
+27: (('SAEMRSA1524300',), ('SAEMRSA1524290',))                (None,)
+28: (('SAEMRSA1525340',), ('SAEMRSA1525350',))      (('clfB',), None)
+29:     (('SATW20_13450',), ('SATW20_13440',))                (None,)
+30:     (('SATW20_14980',), ('SATW20_14970',))                (None,)
+31:     (('SATW20_22260',), ('SATW20_22270',))                (None,)
+32:     (('SATW20_22970',), ('SATW20_22980',))                (None,)
+33:     (('SATW20_24810',), ('SATW20_24800',))                (None,)
+34:     (('SATW20_25630',), ('SATW20_25620',))                (None,)
+35:     (('SATW20_26920',), ('SATW20_26930',))                (None,)
+36:   (('SAUSA300_1813',), ('SAUSA300_1812',))                (None,)
+37:   (('SAUSA300_0017',), ('SAUSA300_0016',)) (('dnaB',), ('purA',))
+38:   (('SAUSA300_0202',), ('SAUSA300_0201',))                (None,)
+39:   (('SAUSA300_0424',), ('SAUSA300_0425',))                (None,)
+40:   (('SAUSA300_0509',), ('SAUSA300_0510',))      (None, ('clpC',))
+41:   (('SAUSA300_0547',), ('SAUSA300_0548',)) (('sdrD',), ('sdrE',))
+42:   (('SAUSA300_0553',), ('SAUSA300_0554',))                (None,)
+43:   (('SAUSA300_0566',), ('SAUSA300_0567',))                (None,)
+44:   (('SAUSA300_0637',), ('SAUSA300_0636',))                (None,)
+45:   (('SAUSA300_0916',), ('SAUSA300_0915',))                (None,)
+46:   (('SAUSA300_1140',), ('SAUSA300_1139',)) (('sucD',), ('lytN',))
+47:   (('SAUSA300_1353',), ('SAUSA300_1354',))                (None,)
+48:   (('SAUSA300_1493',), ('SAUSA300_1494',))                (None,)
+49:   (('SAUSA300_1497',), ('SAUSA300_1498',))      (('gcvT',), None)
+50:   (('SAUSA300_2062',), ('SAUSA300_2063',)) (('atpE',), ('atpF',))
+51:   (('SAUSA300_2239',), ('SAUSA300_2238',)) (('ureB',), ('ureA',))
+52:   (('SAUSA300_2490',), ('SAUSA300_2491',))                (None,)
+                                     locus_tag                   gene
+                                                                                                                                         product
+ 1:                                                                         (('very large surface anchored protein (pseudogene)',), ('Sau-17',))
+ 2:                                                                         (('very large surface anchored protein (pseudogene)',), ('Sau-17',))
+ 3:                                                                         (('very large surface anchored protein (pseudogene)',), ('Sau-17',))
+ 4:                                                                        (('superoxide dismutase',), ('polysaccharide biosynthesis protein',))
+ 5:                                                                        (('putative zinc-binding dehydrogenase',), ('hypothetical protein',))
+ 6:                                                                          (('putative L-ribulokinase',), ('conserved hypothetical protein',))
+ 7:                                                                        (('putative membrane protein',), ('conserved hypothetical protein',))
+ 8:                                                                                                 (('tsr21',), ('putative membrane protein',))
+ 9:                                                                                                 (('tsr21',), ('putative membrane protein',))
+10:                                                                                                 (('tsr21',), ('putative membrane protein',))
+11:                                                 (('glyoxalase/bleomycin resistance protein/dioxygenase superfamily protein (pseudogene)',),)
+12:                                                                             (('hypothetical protein',), ('conserved hypothetical protein',))
+13:                                                                                  (('putative exonuclease',), ('putative membrane protein',))
+14:                                                            (('sodium:alanine symporter family protein',), ('transcription antiterminator',))
+15:                                        (('putative methicillin resistance expression factor',), ('putative membrane protein (pseudogene)',))
+16:                                                                         (('very large surface anchored protein (pseudogene)',), ('Sau-17',))
+17:                                                                         (('very large surface anchored protein (pseudogene)',), ('Sau-17',))
+18:                                                                         (('very large surface anchored protein (pseudogene)',), ('Sau-17',))
+19:                                                                         (('very large surface anchored protein (pseudogene)',), ('Sau-17',))
+20:                                                                         (('very large surface anchored protein (pseudogene)',), ('Sau-17',))
+21:                                                                         (('very large surface anchored protein (pseudogene)',), ('Sau-17',))
+22:                                                                          (('putative exported protein',), ('6-phospho-beta-galactosidase',))
+23:                                                                                  (('urease gamma subunit',), ('putative membrane protein',))
+24:                                                                           (('putative transcription regulator',), ('hypothetical protein',))
+25:                                                                                        (('putative transport system protein',), ('Teg130',))
+26:                                                        (('putative transposase (fragment)',), ('D-specific D-2-hydroxyacid dehydrogenase',))
+27:                                            (('putative L-serine dehydratase, beta chain',), ('putative L-serine dehydratase, alpha chain',))
+28:                                                   (('putative esterase',), ('fibrinogen and keratin-10 binding surfaced anchored protein',))
+29:                                                                                (('putative exported protein',), ('putative transketolase',))
+30:                                                          (('aldo/keto reductase family protein',), ('putative ADP-ribose pyrophosphatase',))
+31:                                                                  (('putative cardiolipin synthetase',), ('conserved hypothetical protein',))
+32:                                                                             (('putative exported protein',), ('putative membrane protein',))
+33:                                                                                                                 (('hypothetical protein',),)
+34:                                                                          (('putative membrane protein',), ('putative transporter protein',))
+35:                                                                             (('hypothetical protein',), ('TetR family regulatory protein',))
+36:                                                                                                             (('tRNA-Gly',), ('tRNA-OTHER',))
+37:                                                                            (('adenylosuccinate synthetase',), ('replicative DNA helicase',))
+38:                                                                                            (('peptide ABC transporter, permease protein',),)
+39:                                                            (('putative cobalamin synthesis protein',), ('NADH dehydrogenase I, F subunit',))
+40:                                                                                    (('endopeptidase',), ('ATP guanido phosphotransferase',))
+41:                                                                                                       (('sdrD protein',), ('sdrE protein',))
+42:                                                                (('glucosamine-6-phosphate isomerase',), ('conserved hypothetical protein',))
+43:                                                                              (('amino acid permease',), ('conserved hypothetical protein',))
+44:                                                     (('dihydroxyacetone kinase, DhaL subunit',), ('dihydroxyacetone kinase, DhaK subunit',))
+45:                                                                                                       (('conserved hypothetical protein',),)
+46:                                                                      (('succinyl-CoA synthetase, alpha subunit',), ('cell wall hydrolase',))
+47:                                                                                                       (('conserved hypothetical protein',),)
+48:                                                                                                       (('conserved hypothetical protein',),)
+49: (('glycine dehydrogenase, subunit 1 (glycine cleavage system P protein)',), ('aminomethyltransferase (glycine cleavage system T protein)',))
+50:                                                                           (('ATP synthase F0, C subunit',), ('ATP synthase F0, B subunit',))
+51:                                                                                      (('urease, gamma subunit',), ('urease, beta subunit',))
+52:                                                         (('regulatory protein, TetR family',), ('1-pyrroline-5-carboxylate dehydrogenase',))
+                                                                                                                                         product
+      intergenic     pseudo   strand             type dist_to_locus
+ 1:  (-197, 197)   ('1', 0)  (-1, 1) ('CDS', 'ncRNA')            NA
+ 2:  (198, -198)   (0, '1')  (1, -1) ('ncRNA', 'CDS')            NA
+ 3:  (182, -182)   (0, '1')  (1, -1) ('ncRNA', 'CDS')            NA
+ 4:  (-134, 134)     (0, 0)   (1, 1)   ('CDS', 'CDS')            NA
+ 5:    (11, -11)     (0, 0)   (1, 1)   ('CDS', 'CDS')            NA
+ 6:  (-107, 107)     (0, 0)   (1, 1)   ('CDS', 'CDS')            NA
+ 7:    (10, -10)     (0, 0) (-1, -1)   ('CDS', 'CDS')            NA
+ 8:    (-89, 89)     (0, 0)  (1, -1) ('ncRNA', 'CDS')            NA
+ 9:    (70, -70)     (0, 0)  (-1, 1) ('CDS', 'ncRNA')            NA
+10:    (11, -11)     (0, 0)  (-1, 1) ('CDS', 'ncRNA')            NA
+11:      (2, -2) ('1', '1')   (1, 1)   ('CDS', 'CDS')            NA
+12: (-135, -135)     (0, 0)  (-1, 1)   ('CDS', 'CDS')            NA
+13:    (62, -62)     (0, 0)   (1, 1)   ('CDS', 'CDS')            NA
+14:  (-250, 250)     (0, 0)   (1, 1)   ('CDS', 'CDS')            NA
+15:  (-145, 145)     (0, 0)   (1, 1)   ('CDS', 'CDS')            NA
+16:    (78, -78)   (0, '1')  (1, -1) ('ncRNA', 'CDS')            NA
+17:    (83, -83)   (0, '1')  (1, -1) ('ncRNA', 'CDS')            NA
+18:  (-138, 138)   ('1', 0)  (-1, 1) ('CDS', 'ncRNA')            NA
+19:  (163, -163)   (0, '1')  (1, -1) ('ncRNA', 'CDS')            NA
+20:  (-181, 181)   ('1', 0)  (-1, 1) ('CDS', 'ncRNA')            NA
+21:  (191, -191)   (0, '1')  (1, -1) ('ncRNA', 'CDS')            NA
+22:  (-133, 133)     (0, 0) (-1, -1)   ('CDS', 'CDS')            NA
+23: (-133, -133)     (0, 0)  (1, -1)   ('CDS', 'CDS')            NA
+24:     (29, 29)     (0, 0)  (-1, 1)   ('CDS', 'CDS')            NA
+25: (-174, -174)     (0, 0)  (1, -1) ('ncRNA', 'CDS')            NA
+26:  (-204, 204)   ('1', 0)   (1, 1)   ('CDS', 'CDS')            NA
+27:      (-7, 7)     (0, 0) (-1, -1)   ('CDS', 'CDS')            NA
+28:    (-58, 58)     (0, 0) (-1, -1)   ('CDS', 'CDS')            NA
+29:  (139, -139)     (0, 0)   (1, 1)   ('CDS', 'CDS')            NA
+30:   (-41, -41)     (0, 0)  (-1, 1)   ('CDS', 'CDS')            NA
+31:   (-83, -83)     (0, 0)  (1, -1)   ('CDS', 'CDS')            NA
+32:      (1, -1)     (0, 0) (-1, -1)   ('CDS', 'CDS')            NA
+33:     (54, 54)     (0, 0)  (-1, 1)   ('CDS', 'CDS')            NA
+34:    (91, -91)     (0, 0)   (1, 1)   ('CDS', 'CDS')            NA
+35:    (-99, 99)     (0, 0)   (1, 1)   ('CDS', 'CDS')            NA
+36:    (52, -52)     (0, 0) (-1, -1) ('tRNA', 'tRNA')            NA
+37:  (139, -139)     (0, 0)   (1, 1)   ('CDS', 'CDS')            NA
+38:      (3, -3)     (0, 0)   (1, 1)   ('CDS', 'CDS')            NA
+39:  (794, -794)     (0, 0)   (1, 1)   ('CDS', 'CDS')            NA
+40:      (-7, 7)     (0, 0)   (1, 1)   ('CDS', 'CDS')            NA
+41:  (-197, 197)     (0, 0)   (1, 1)   ('CDS', 'CDS')            NA
+42: (-138, -138)     (0, 0)  (1, -1)   ('CDS', 'CDS')            NA
+43:     (71, 71)     (0, 0)  (-1, 1)   ('CDS', 'CDS')            NA
+44:    (-21, 21)     (0, 0)   (1, 1)   ('CDS', 'CDS')            NA
+45:    (-97, 97)     (0, 0)   (1, 1)   ('CDS', 'CDS')            NA
+46:    (-97, 97)     (0, 0)   (1, 1)   ('CDS', 'CDS')            NA
+47:      (-7, 7)     (0, 0) (-1, -1)   ('CDS', 'CDS')            NA
+48:     (32, 32)     (0, 0)  (-1, 1)   ('CDS', 'CDS')            NA
+49:    (10, -10)     (0, 0) (-1, -1)   ('CDS', 'CDS')            NA
+50:    (99, -99)     (0, 0) (-1, -1)   ('CDS', 'CDS')            NA
+51:      (-7, 7)     (0, 0)   (1, 1)   ('CDS', 'CDS')            NA
+52:   (178, 178)     (0, 0)  (1, -1)   ('CDS', 'CDS')            NA
+      intergenic     pseudo   strand             type dist_to_locus
+> print('compare.2.vectors package:afex Compare two vectors using various tests.')
+[1] "compare.2.vectors package:afex Compare two vectors using various tests."
+> compare.2.vectors(
++     hps[(n_homoplasic_acctran > 0 | n_homoplasic_deltran > 0), 'dist_to_locus'], 
++     hps[!(n_homoplasic_acctran > 0 | n_homoplasic_deltran > 0), 'dist_to_locus'],
++     na.rm=T
++ )
+$parametric
+   test test.statistic test.value   test.df            p
+1     t              t  14.781771 72032.000 2.269266e-49
+2 Welch              t   7.961405  3563.208 2.267167e-15
+
+$nonparametric
+             test test.statistic   test.value test.df         p
+1 stats::Wilcoxon              W 1.201228e+08      NA 0.3008657
+2     permutation              Z 1.475950e+01      NA 0.0000000
+3  coin::Wilcoxon              Z 1.034579e+00      NA 0.3012400
+4          median              Z 2.173032e+01      NA 0.0000000
+
+> # $parametric
+>    # test test.statistic test.value  test.df            p
+> # 1     t              t   4.464178 28285.00 8.068698e-06
+> # 2 Welch              t   2.604557  1603.28 9.284332e-03
+> 
+> # $nonparametric
+>              # test test.statistic    test.value test.df            p
+> # 1 stats::Wilcoxon              W  2.000169e+07      NA 0.0006644721
+> # 2     permutation              Z  4.462685e+00      NA 0.0000100000
+> # 3  coin::Wilcoxon              Z -3.403836e+00      NA 0.0007300000
+> # 4          median              Z  8.676931e+00      NA 0.0000000000
+> 
+> sink()
+> 
+> 
+> proc.time()
+    user   system  elapsed 
+1131.942    0.584 1133.446 

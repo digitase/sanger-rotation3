@@ -30,25 +30,31 @@ geneUniverse <- sapply(
 )
 
 # Read in locations of hp snps
+# hp_files = c(
+    # '/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/2_homoplasy/summarise_homoplasies/S.aureus_ST22_BSAC_Pfizer/st22_homoplasies.csv',
+    # '/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/2_homoplasy/summarise_homoplasies/S.aureus_ST239_global_Singapore_Pfizer/st239_homoplasies.csv',
+    # '/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/2_homoplasy/summarise_homoplasies/S.aureus_ST8_BSAC_Pfizer_revised/st8_homoplasies.csv'
+# )
+# without known amr sites
 hp_files = c(
-    '/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/2_homoplasy/summarise_homoplasies/S.aureus_ST22_BSAC_Pfizer/st22_homoplasies.csv',
-    '/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/2_homoplasy/summarise_homoplasies/S.aureus_ST239_global_Singapore_Pfizer/st239_homoplasies.csv',
-    # '/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/2_homoplasy/summarise_homoplasies/S.aureus_ST30_BSAC_Pfizer/st30_homoplasies.csv',
-    '/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/2_homoplasy/summarise_homoplasies/S.aureus_ST8_BSAC_Pfizer_revised/st8_homoplasies.csv'
-)
-names(hp_files) <- c(
-                     'st22', 'st239', 
-                     # 'st30', 
-                     'st8')
-genesOfInterest <- c()
+             '/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/6_summarise_results/st22_homoplasies.known_amr_filtered.csv',
+             '/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/6_summarise_results/st239_homoplasies.known_amr_filtered.csv',
+             '/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/6_summarise_results/st8_homoplasies.known_amr_filtered.csv')
 
+names(hp_files) <- c(
+    'st22', 
+    'st239', 
+    'st8'
+)
+
+genesOfInterest <- c()
 for (hp_file in hp_files) {
     print(hp_file)
     hp <- fread(hp_file)
     hp$dist_to_locus <- unlist(lapply(hp$intergenic, function(x) strtoi(gsub('\\(|,|\\)', '', as.character(x)))))
     hp[, geneNames := gsub("\\(|,|\\)|'", '', locus_tag)]
     # Define set of interest to be those loci that are just downstream of hp sites
-    genesOfInterest.new <- unique(hp[dist_to_locus <= -1 & dist_to_locus >= -200, gsub("\\(|,|\\)|'", '', locus_tag)])
+    genesOfInterest.new <- unique(hp[dist_to_locus < 0 & dist_to_locus >= -200, gsub("\\(|,|\\)|'", '', locus_tag)])
     # genesOfInterest.new <- unique(gsub("\\(|,|\\)|'", '', hp$locus_tag))
     genesOfInterest <- c(
         genesOfInterest,
@@ -60,7 +66,7 @@ outdir <- '.output/topGO/'
 dir.create(outdir)
 setwd(outdir)
 
-# TODO do for each strain and combine tables
+# Enrich
 geneList <- factor(as.integer(geneUniverse %in% genesOfInterest))
 names(geneList) <- geneUniverse
 #
@@ -70,7 +76,7 @@ for (onto in c('BP', 'MF', 'CC')) {
     weight01.fisher <- runTest(GOdata, algorithm="weight01", statistic="fisher")
     # hist(score(weight01.fisher), 50, xlab = "p-values")
     allRes <- GenTable(GOdata, classic=classic.fisher, weight=weight01.fisher,
-        orderBy="weight", ranksOf="classic", topNodes=20)
+        orderBy="weight", ranksOf="classic", topNodes=50, numChar=999)
     write.csv(allRes, sprintf('%s.genTable.csv', onto))
     printGraph(GOdata, classic.fisher, firstSigNodes=5, fn.prefix=onto, useInfo='all', pdfSW=T)
     printGraph(GOdata, weight01.fisher, firstSigNodes=5, fn.prefix=onto, useInfo='all', pdfSW=T)
