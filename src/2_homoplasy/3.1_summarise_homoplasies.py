@@ -290,6 +290,14 @@ if __name__ == "__main__":
             & (hp_merged['n_reversal_acctran'] == hp_merged['n_reversal_deltran']) 
             #  & (hp_merged['n_both_acctran'] == hp_merged['n_both_deltran'])
         )
+        print('n_convergence_acctran: {}, n_convergence_deltran: {}'.format(
+            len(hp_merged.query('n_convergence_acctran > 0')),
+            len(hp_merged.query('n_convergence_deltran > 0'))
+        ))
+        print('n_reversal_acctran: {}, n_reversal_deltran: {}'.format(
+            len(hp_merged.query('n_reversal_acctran > 0')),
+            len(hp_merged.query('n_reversal_deltran > 0'))
+        ))
         print('Homoplasic sites with acctran/deltran reconstruction agreement: {}/{}'.format(
             sum(hp_merged.query('n_homoplasic_acctran > 0 | n_homoplasic_deltran > 0')['agree_acctran_deltran']),
             len(hp_merged.query('n_homoplasic_acctran > 0 | n_homoplasic_deltran > 0'))

@@ -2,6 +2,7 @@
 '''
 
 import pandas as pd
+import numpy as np
 
 sources = {
     'sh_2010': '/nfs/users/nfs_b/bb9/workspace/rotation3/misc/homoplasies_st239_harris_et_al_2010_science_table1.annotated.csv',
@@ -48,4 +49,22 @@ all_genes = amr_sh_genes | amr_ly_genes | amr_lit_genes
 
 with open('.output/known_amr_loci.txt', 'w') as outfile:
     outfile.write('\n'.join(all_genes))
+
+# Check overlap of SH 2010 study with st239
+
+def find_nearest(array,value):
+    idx = (np.abs(array-value)).argmin()
+    return array[idx]
+
+st239_hps = pd.read_csv('/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/2_homoplasy/summarise_homoplasies/S.aureus_ST239_global_Singapore_Pfizer/st239_homoplasies.csv')
+print(sum(amr_sh['SNP position'].isin(st239_hps['loc'])))
+print(len(amr_sh['SNP position'].isin(st239_hps['loc'])))
+
+missing = amr_sh.loc[~amr_sh['SNP position'].isin(st239_hps['loc'])]
+
+for row in missing.iterrows():
+    print(row[1])
+    nearest_snp = find_nearest(st239_hps['loc'], row[1]['SNP position'])
+    print(row[1]['SNP position'], nearest_snp)
+    print(st239_hps.loc[st239_hps['loc'] == nearest_snp])
 

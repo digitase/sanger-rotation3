@@ -5,6 +5,9 @@ Identify sites where homoplasies have occured in multiple strains
 
 import pandas as pd
 import pickle
+import collections
+from matplotlib import pyplot as plt
+import matplotlib_venn
 
 prefixes = {
     "st22": "S.aureus_ST22_BSAC_Pfizer",
@@ -64,4 +67,21 @@ hps_merged = hps_merged.loc[hps_merged['n_homoplasic_acctran'].astype(bool) | hp
 print('Writing output...')
 dupe_sites = hps_merged[hps_merged.duplicated('loc_in_alignment', keep=False)].sort_values(['loc_in_alignment', 'level_1'])
 dupe_sites.to_csv('/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/3_find_candidates/hp_sites_summary.csv')
+
+# Various stats
+
+# Distribution of nonduplicated hp sites 
+nondupe_sites = hps_merged[~hps_merged.duplicated('loc_in_alignment', keep=False)].sort_values(['loc_in_alignment', 'level_1'])
+collections.Counter(nondupe_sites.level_0)
+
+# venn of how many hp sites are in 1, 2, and 3 sts
+st22_locs = hps_merged.groupby('loc_in_alignment')['level_0'].apply(lambda x: 'st22' in set(x))
+st22_set = set(st22_locs.loc[st22_locs].index)
+st8_locs = hps_merged.groupby('loc_in_alignment')['level_0'].apply(lambda x: 'st8' in set(x))
+st8_set = set(st8_locs.loc[st8_locs].index)
+st239_locs = hps_merged.groupby('loc_in_alignment')['level_0'].apply(lambda x: 'st239' in set(x))
+st239_set = set(st239_locs.loc[st239_locs].index)
+
+matplotlib_venn.venn3([st22_set, st8_set, st239_set], ('ST22', 'ST8', 'ST239'))
+plt.savefig('.output/hp_sites_venn.pdf')
 

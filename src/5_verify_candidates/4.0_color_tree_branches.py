@@ -40,6 +40,11 @@ locs_df = pd.read_csv('/nfs/users/nfs_b/bb9/workspace/rotation3/lustre/3_find_ca
 for _, row in locs_df.iterrows():
     locs[row['level_0']].append(row['loc_in_alignment'])
 
+#  For the report
+locs = {
+    'st22': [2462688],
+}
+
 for short_prefix, locs in locs.items():
     print('Parsing snps file...')
     prefix = prefixes[short_prefix]

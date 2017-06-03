@@ -111,3 +111,12 @@ if __name__ == "__main__":
     with open('.output/locus_tags_unannotated.txt', 'w') as outfile:
         outfile.write('\n'.join(locus_tags_unannotated))
 
+    #  Various summary stats
+    Counter(list(flatten_list_or_tuple (  
+        tuple(summary_sites_by_gene.loc[summary_sites_by_gene.n_sts == 2, 'sts'])
+    )))
+
+    Counter(list(flatten_list_or_tuple (  
+        tuple(summary_sites_by_gene.loc[summary_sites_by_gene.n_sts == 3, 'sts'])
+    )))
+
