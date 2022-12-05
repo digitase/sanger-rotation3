@@ -1,3 +1,8 @@
+# Informatics rotation project for 3rd rotation 2016-17
+
+## Using Homoplasy to Study Recent Selection in Staphylococcus aureus
+
+### Drs Julian Parkhill and Simon Harris
 
 ./data/
 
